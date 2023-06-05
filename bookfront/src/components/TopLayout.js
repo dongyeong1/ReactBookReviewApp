@@ -6,6 +6,7 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { ADD_BOOK, SEARCH_BOOK_REQUEST } from '../reducer'
 import { UserOutlined,LogoutOutlined} from '@ant-design/icons';
+import { Link, Router } from 'react-router-dom'
 
 
 const AppWrapper=styled.div`
@@ -67,11 +68,15 @@ const bookSearch=useCallback(()=>{
 
 },[bookName,books])
 
+const Home=useCallback(()=>{
+    window.location.replace('/');
+},[])
+
   return (
     <div>
         <AppWrapper>
         {/* <img src="https://media-sparta.s3.ap-northeast-2.amazonaws.com/media/images/patagonia_main_logo.png"/> */}
-        <p>책리뷰</p>
+        <a onClick={Home}>책리뷰</a>
             <InputSearch  placeholder='책을 검색하세요' onChange={onChangeBook} onSearch={bookSearch}></InputSearch>
                
             <IconWrapper>
