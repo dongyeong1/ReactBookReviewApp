@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { Modal ,Input} from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
-import { SEARCH_BOOK_REQUEST } from '../reducer'
+import { SEARCH_BOOK_REMOVE, SEARCH_BOOK_REQUEST } from '../reducer'
 import styled from 'styled-components'
 
 const ModalWrapper=styled(Modal)`
@@ -28,8 +28,9 @@ align-items: center ;
 margin-right:auto;
 
 `
-const BookSearchFormModal = ({setModal,modal}) => {
+const BookSearchFormModal = ({setModal,modal,setSearchedBook}) => {
  
+//  const [bookId,setBookId]=useState('')
 const [bookName,setBookName]=useState('')
 
 
@@ -54,19 +55,30 @@ const bookSearch=useCallback(()=>{
 
 },[bookName,books])
 
+const imageClick=useCallback((title,isbn,image)=>()=>{
+  setSearchedBook({title,isbn,image})
+  // setBookId(isbn)//나중에form보낼때
+  dispatch({
+    type:SEARCH_BOOK_REMOVE
+  })
+  setBookName('')
+  setModal(false)
+  
+},[bookName,modal])
+
   const handleCancel=useCallback(()=>{
     setModal(false)
   },[modal])
   return (
     <div>
-        <ModalWrapper title="Basic Modal" open={modal} onCancel={handleCancel}>
+        <ModalWrapper open={modal} onCancel={handleCancel}>
           <div>
-        <Input.Search onChange={onChangeBook} onSearch={bookSearch}></Input.Search>
+        <Input.Search value={bookName}  onChange={onChangeBook} onSearch={bookSearch}></Input.Search>
         </div>
         <ResultWrapper>
 
         {books&&books.map((v)=>(
-       <Abc>
+       <Abc onClick={imageClick(v.title,v.isbn,v.image)}>
         <img  src={v.image} style={{width:100}}></img>
         <div>{v.title}</div>
         </Abc>

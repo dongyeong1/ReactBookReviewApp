@@ -7,7 +7,7 @@ import shortId from 'shortid'
     posts:[],
     searchbookLoading:false,
     searchbookSuccess:false,
-    seacchbookError:null,
+    seachbookError:null,
 };
 
 
@@ -37,6 +37,8 @@ export const SEARCH_BOOK_REQUEST='SEARCH_BOOK_REQUEST'
 export const SEARCH_BOOK_SUCCESS='SEARCH_BOOK_SUCCESS'
 export const SEARCH_BOOK_FAIL='SEARCH_BOOK_FAIL'
 
+export const SEARCH_BOOK_REMOVE='SEARCH_BOOK_REMOVE'
+
 
 
 const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
@@ -61,8 +63,10 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                 draft.books=action.data
                 break;
             case SEARCH_BOOK_FAIL:
-                draft.seacchbookError='err'
+                draft.seachbookError='err'
                 break;
+            case SEARCH_BOOK_REMOVE:
+                draft.books=[]
 
             default:
                 break;

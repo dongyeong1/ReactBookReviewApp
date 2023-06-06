@@ -25,13 +25,13 @@ const loadBook=useCallback((data)=>()=>{//map안에는 고차함수써주기
 
   return (
     <div>
-      {books?books.map((v)=>(
+      {/* {books?books.map((v)=>(
         <div>
         <div>{v.title}</div>
         <Link to={`/Post/${v.isbn}`} >
         <img onClick={loadBook(v.isbn)} src={v.image} style={{width:100}}></img></Link>
         </div>
-        )):null}
+        )):null} */}
        </div>
 
   )

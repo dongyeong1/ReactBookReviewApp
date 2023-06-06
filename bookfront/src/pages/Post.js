@@ -1,26 +1,18 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import PostCard from '../components/PostCard'
-import PostForm from '../components/PostForm'
-import { LOAD_BOOK } from '../reducer'
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 const Post = () => {
     const {id}=useParams();
-    const {books,posts}=useSelector((state)=>state)
 
-    const dispatch=useDispatch()
-    
+    useEffect(()=>{
+        //postid로 포스트정보 조회
+    },[])
+
+    const {posts}=useSelector((state)=>state)
+
   return (
-    <div>
-        <div>{books.title}</div>
-        <img src={books.image} style={{width:300}}></img>
-        <PostForm id={id}></PostForm>
-        {posts&&posts.map((v)=>(
-        <PostCard post={v}></PostCard>
-
-            ))}
-    </div>
+    <div>Post</div>
   )
 }
 
