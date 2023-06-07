@@ -1,7 +1,11 @@
 import {all,fork,call,take,put, takeEvery, takeLatest, delay} from 'redux-saga/effects'
-import { SEARCH_BOOK_FAIL, SEARCH_BOOK_REQUEST, SEARCH_BOOK_SUCCESS } from '../reducer'
+import { SEARCH_BOOK_FAIL, SEARCH_BOOK_REQUEST, SEARCH_BOOK_SUCCESS, SIGNUP_REQUEST, SIGNUP_SUCCESS } from '../reducer'
 
 import axios from 'axios';
+
+
+
+axios.defaults.withCredentials=true
 
 function searchBookAPI(data){
     // return axios.post('/post',data,{
@@ -48,11 +52,54 @@ function* searchBook(action){
 }
 
 
+
+
+
+function signUpAPI(data){
+    // return axios.post('/post',data,{
+    //     withCredentials:true
+    // })
+    return axios.post('http://localhost:3065/user/signup',{
+        email:data.email,
+        password:data.password,
+        nickname:data.nickname
+    })
+   
+}
+
+
+
+function* signUp(action){
+
+    try{
+        // const id=shortid.generate()
+        // yield delay(1000)
+        // console.log(action.data,'asdsadsa')
+        const result =yield call(signUpAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        yield put({
+            type:SIGNUP_SUCCESS,
+           
+        })
+    
+        
+    }catch(err){
+      
+        console.log(err)
+    }
+    
+}
+
+
+
 function* watchSearchBook() {
     yield takeLatest(SEARCH_BOOK_REQUEST, searchBook);
   }
   
 
+  function* watchSignup() {
+    yield takeLatest(SIGNUP_REQUEST, signUp);
+  }
+  
 
 export default function* rootSaga(){
  
@@ -61,6 +108,7 @@ export default function* rootSaga(){
       
 
         fork(watchSearchBook),
+        fork(watchSignup)
     ])
 
 }
