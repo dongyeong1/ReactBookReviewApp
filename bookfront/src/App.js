@@ -14,8 +14,13 @@ import Home from './pages/Home';
 import Book from './pages/Book';
 import BookSearch from './pages/BookSearch';
 import Post from './pages/Post';
+import { useSelector } from 'react-redux';
+import UserProfile from './components/UserProfile';
+import LoginForm from './components/LoginForm';
 // import { redirect } from 'react-router-dom';
 function App() {
+
+  const {user}=useSelector((state)=>state)
 
   return (
 
@@ -28,6 +33,8 @@ function App() {
        {/* {abc?<UserProfile setAbc={setAbc} name={name} setName={setName}/>:<LoginForm  setAbc={setAbc}name={name} setName={setName}/>
 
        }  */}
+       {user?<UserProfile></UserProfile>:<LoginForm></LoginForm>}
+
       </Col>
       <Col span={18}>
        

@@ -3,8 +3,8 @@ const postRouter=require('./routes/post')
 const userRouter=require('./routes/user')
 const db=require('./models')
 const cors=require('cors')
-// const passportConfig=require('./passport')
-// const passport = require('passport')
+const passportConfig=require('./passport')
+const passport = require('passport')
 const session = require("express-session");
 const cookieParser=require('cookie-parser')
 const dotenv=require('dotenv')
@@ -24,7 +24,7 @@ db.sequelize.sync()
     console.log('db연결성공')
 })
 
-// passportConfig();
+passportConfig();
 
 
   app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -36,8 +36,8 @@ app.use(session({
     resave: false,
     secret:process.env.COOKIE_SECRET
 }));
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 app.get('/',(req,res)=>{
     res.send('asd')
 })

@@ -1,16 +1,18 @@
 import {produce} from 'immer';
 import shortId from 'shortid'
  const initState = {
-    num: "",
-    content: "dong",
     books:[],
     posts:[],
+    user:null,
     searchbookLoading:false,
     searchbookSuccess:false,
     seachbookError:null,
     signupLoading:false,
     signupSuccess:false,
     signupError:null,
+    loginLoading:false,
+    loginSuccess:false,
+    loginError:null,
 };
 
 
@@ -46,6 +48,10 @@ export const SIGNUP_REQUEST='SIGNUP_REQUEST'
 export const SIGNUP_SUCCESS='SIGNUP_SUCCESS'
 export const SIGNUP_FAIL='SIGNUP_FAIL'
 
+export const LOGIN_REQUEST='LOGIN_REQUEST'
+export const LOGIN_SUCCESS='LOGIN_SUCCESS'
+export const LOGIN_FAIL='LOGIN_FAIL'
+
 
 
 const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
@@ -72,17 +78,29 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
             case SEARCH_BOOK_FAIL:
                 draft.seachbookError='err'
                 break;
-            case SEARCH_BOOK_REQUEST:
+            case SIGNUP_REQUEST:
                 draft.signupLoading=true;
                 draft.signupSuccess=false;
                 break;
-            case SEARCH_BOOK_SUCCESS:
+            case SIGNUP_SUCCESS:
                 draft.signupLoading=false;
                 draft.signupSuccess=true;
                 break;
-            case SEARCH_BOOK_FAIL:
+            case SIGNUP_FAIL:
                 draft.signupError='err'
-                break;    
+                break;
+            case LOGIN_REQUEST:
+                draft.loginLoading=true;
+                draft.loginSuccess=false;
+                break;
+            case LOGIN_SUCCESS:
+                draft.loginLoading=false;
+                draft.loginSuccess=true;
+                draft.user=action.data
+                break;
+            case LOGIN_FAIL:
+                draft.loginError='err'
+                break;            
             case SEARCH_BOOK_REMOVE:
                 draft.books=[]
             default:
