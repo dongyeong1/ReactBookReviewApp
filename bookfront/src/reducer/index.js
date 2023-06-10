@@ -1,8 +1,9 @@
 import {produce} from 'immer';
 import shortId from 'shortid'
  const initState = {
-    books:[],
-    posts:[],
+    books:null,
+    posts:null,
+    post:null,
     user:null,
     searchbookLoading:false,
     searchbookSuccess:false,
@@ -13,6 +14,33 @@ import shortId from 'shortid'
     loginLoading:false,
     loginSuccess:false,
     loginError:null,
+    addPostLoading:false,
+    addPostSuccess:false,
+    addPostError:null,
+    addCommentLoading:false,
+    addCommentSuccess:false,
+    addCommentError:null,
+    bookPostsLoading:false,
+    bookPostsSuccess:null,
+    booPostsError:null,
+    postloadLoading:false,
+    postloadSuccess:false,
+    postloadError:null,
+    likePostLoading:false,
+    likePostSuccess:false,
+    likePostError:null,
+    unlikePostLoading:false,
+    unlikePostSuccess:false,
+    unlikePostError:null,
+    loadMyInfoLoading: false, // 유저 정보 가져오기 시도중
+    loadMyInfoDone: false,
+    loadMyInfoError: null,
+    followLoading: false, // 팔로우 시도중
+  followDone: false,
+  followError: null,
+  unfollowLoading: false, // 언팔로우 시도중
+  unfollowDone: false,
+  unfollowError: null,
 };
 
 
@@ -52,10 +80,107 @@ export const LOGIN_REQUEST='LOGIN_REQUEST'
 export const LOGIN_SUCCESS='LOGIN_SUCCESS'
 export const LOGIN_FAIL='LOGIN_FAIL'
 
+export const ADD_POST_REQUEST='ADD_POST_REQUEST'
+export const ADD_POST_SUCCESS='ADD_POST_SUCCESS'
+export const ADD_POST_FAIL='ADD_POST_FAIL'
+
+export const ADD_COMMENT_REQUEST='ADD_COMMENT_REQUEST'
+export const ADD_COMMENT_SUCCESS='ADD_COMMENT_SUCCESS'
+export const ADD_COMMENT_FAIL='ADD_COMMENT_FAIL'
+
+export const BOOK_POSTS_REQUEST='BOOK_POSTS_REQUEST'
+export const BOOK_POSTS_SUCCESS='BOOK_POSTS_SUCCESS'
+export const BOOK_POSTS_FAIL='BOOK_POSTS_FAIL'
+
+export const POST_LOAD_REQUEST='POST_LOAD_REQUEST'
+export const POST_LOAD_SUCCESS='POST_LOAD_SUCCESS'
+export const POST_LOAD_FAIL='POST_LOAD_FAIL'
+
+export const LIKE_POST_REQUEST='LIKE_POST_REQUEST'
+export const LIKE_POST_SUCCESS='LIKE_POST_SUCCESS'
+export const LIKE_POST_FAIL='LIKE_POST_FAIL'
+
+export const UNLIKE_POST_REQUEST='UNLIKE_POST_REQUEST'
+export const UNLIKE_POST_SUCCESS='UNLIKE_POST_SUCCESS'
+export const UNLIKE_POST_FAIL='UNLIKE_POST_FAIL'
+
+export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
+export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
+export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
+
+
+export const FOLLOW_REQUEST = 'FOLLOW_REQUEST';
+export const FOLLOW_SUCCESS = 'FOLLOW_SUCCESS';
+export const FOLLOW_FAILURE = 'FOLLOW_FAILURE';
+
+export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST';
+export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS';
+export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
+
+
+export const LOG_OUT_REQUEST = 'LOG_OUT_REQUEST';
+export const LOG_OUT_SUCCESS = 'LOG_OUT_SUCCESS';
+export const LOG_OUT_FAILURE = 'LOG_OUT_FAILURE';
 
 
 const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
         switch(action.type){
+            case LOG_OUT_REQUEST:
+                draft.logOutLoading = true;
+                draft.logOutError = null;
+                draft.logOutDone = false;
+                break;
+              case LOG_OUT_SUCCESS:
+                draft.logOutLoading = false;
+                draft.logOutDone = true;
+                draft.user = null;
+                break;
+              case LOG_OUT_FAILURE:
+                draft.logOutLoading = false;
+                draft.logOutError = action.error;
+                break;
+            case LOAD_MY_INFO_REQUEST:
+        draft.loadMyInfoLoading = true;
+        draft.loadMyInfoError = null;
+        draft.loadMyInfoDone = false;
+        break;
+      case LOAD_MY_INFO_SUCCESS:
+        draft.loadMyInfoLoading = false;
+        draft.user = action.data;
+        draft.loadMyInfoDone = true;
+        break;
+      case LOAD_MY_INFO_FAILURE:
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoError = action.error;
+        break;
+        case FOLLOW_REQUEST:
+            draft.followLoading = true;
+            draft.followError = null;
+            draft.followDone = false;
+            break;
+          case FOLLOW_SUCCESS:
+            draft.followLoading = false;
+            draft.user.Followings.push({ id: action.data.UserId });
+            draft.followDone = true;
+            break;
+          case FOLLOW_FAILURE:
+            draft.followLoading = false;
+            draft.followError = action.error;
+            break;
+          case UNFOLLOW_REQUEST:
+            draft.unfollowLoading = true;
+            draft.unfollowError = null;
+            draft.unfollowDone = false;
+            break;
+          case UNFOLLOW_SUCCESS:
+            draft.unfollowLoading = false;
+            draft.user.Followings = draft.user.Followings.filter((v) => v.id !== action.data.UserId);
+            draft.unfollowDone = true;
+            break;
+          case UNFOLLOW_FAILURE:
+            draft.unfollowLoading = false;
+            draft.unfollowError = action.error;
+            break;
             case ADD_BOOK:
                 draft.books=action.data
                 break;
@@ -63,9 +188,9 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                 draft.books=draft.books.find((v)=>v.isbn===action.data)
                 // const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
                 break;
-            case ADD_POST:
-                draft.posts.unshift(dummyPost(action.data)) 
-                break;
+            // case ADD_POST:
+            //     draft.posts.unshift(dummyPost(action.data)) 
+            //     break;
             case SEARCH_BOOK_REQUEST:
                 draft.searchbookLoading=true;
                 draft.searchbookSuccess=false;
@@ -100,9 +225,97 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                 break;
             case LOGIN_FAIL:
                 draft.loginError='err'
-                break;            
+                break;
+            case ADD_POST_REQUEST:
+                draft.addPostLoading=true;
+                draft.addPostSuccess=false;
+                break;
+            case ADD_POST_SUCCESS:
+                draft.addPostLoading=false;
+                draft.addPostSuccess=true;
+                draft.post=action.data
+                break;
+            case ADD_POST_FAIL:
+                draft.addPostError='err'
+                break;                
+            case ADD_COMMENT_REQUEST:
+                draft.addCommentLoading=true;
+                draft.addCommentSuccess=false;
+                break;
+            case ADD_COMMENT_SUCCESS:
+                    draft.addCommentLoading=false;
+                    draft.addCommentSuccess=true;
+                    // draft.post=action.data
+                    draft.post.Comments.unshift(action.data);
+
+                    break;
+            case ADD_COMMENT_FAIL:
+                    draft.addCommentError='err';
+                    break;
+            case BOOK_POSTS_REQUEST:
+                        draft.bookPostsLoading=true;
+                        draft.bookPostsSuccess=false;
+                        break;
+            case BOOK_POSTS_SUCCESS:
+                            draft.bookPostsLoading=false;
+                            draft.bookPostsSuccess=true;
+                            //W draft.post=action.data
+                            draft.posts=action.data;
+                            break;
+            case BOOK_POSTS_FAIL:
+                            draft.bookPostsError='err'
+                            break;                
+            case POST_LOAD_REQUEST:
+                                draft.postloadLoading=true;
+                                draft.postloadSuccess=false;
+                                break;
+            case POST_LOAD_SUCCESS:
+                                    draft.postloadLoading=false;
+                                    draft.postloadSuccess=true;
+                                    // draft.post=action.data
+                                    draft.post=action.data;
+                                    break;
+            case POST_LOAD_FAIL:
+                                    draft.postloadError='err'
+                                    break;
+                                    
+            case LIKE_POST_REQUEST:
+                                        draft.likePostLoading=true;
+                                        draft.likePostSuccess=false;
+                                        break;
+                    case LIKE_POST_SUCCESS:
+                                            draft.likePostLoading=false;
+                                            draft.likePostSuccess=true;
+                                            const post=draft.posts.find((v)=>v.id===action.data.PostId)
+                                            console.log('posttttt',post)
+                                            console.log('action.data',action.data)
+                                            post.Likers.push({ id: action.data.UserId });
+
+                                            // draft.post=action.data
+                                            // draft.post=action.data;
+                                            break;
+                    case LIKE_POST_FAIL:
+                                            draft.likePostError='err'
+                                            break; 
+                    case UNLIKE_POST_REQUEST:
+                                                draft.unlikePostLoading=true;
+                                                draft.unlikePostSuccess=false;
+                                                break;
+                     case UNLIKE_POST_SUCCESS:
+                                                    draft.unlikePostLoading=false;
+                                                    draft.unlikePostSuccess=true;
+                            const post1 = draft.posts.find((v) => v.id=== action.data.PostId);
+                            post1.Likers = post1.Likers.filter((v) => v.id !== action.data.UserId);
+                                                    // draft.post=action.data
+                                                    // draft.post=action.data;
+                                                    break;
+                 case UNLIKE_POST_FAIL:
+                                                    draft.unlikePostError='err'
+                                                    break;                                           
+                                    
             case SEARCH_BOOK_REMOVE:
                 draft.books=[]
+                break;
             default:
                 break;
         }

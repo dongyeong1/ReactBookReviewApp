@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const comment = require('./comment');
-const book = require('./book');
-const image = require('./image');
+// const book = require('./book');
+// const image = require('./image');
 const post = require('./post');
 const user = require('./user');
 
@@ -12,8 +12,8 @@ const db = {};
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 db.Comment = require('./comment')(sequelize,Sequelize);
-db.Book = require('./book')(sequelize,Sequelize);
-db.Image = require('./image')(sequelize,Sequelize);
+// db.Book = require('./book')(sequelize,Sequelize);
+// db.Image = require('./image')(sequelize,Sequelize);
 db.Post = require('./post')(sequelize,Sequelize);
 db.User = require('./user')(sequelize,Sequelize);
 

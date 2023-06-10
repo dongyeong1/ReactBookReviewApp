@@ -17,6 +17,7 @@ import Post from './pages/Post';
 import { useSelector } from 'react-redux';
 import UserProfile from './components/UserProfile';
 import LoginForm from './components/LoginForm';
+import MyPage from './pages/MyPage';
 // import { redirect } from 'react-router-dom';
 function App() {
 
@@ -49,6 +50,8 @@ function App() {
           <Route exact path='/book/:id' element={<Book></Book>}>
           </Route>
           <Route exact path='/post/:id' element={<Post></Post>}>
+          </Route>
+          <Route exact path='/mypage' element={<MyPage></MyPage>}>
           </Route>
           
         </Routes>

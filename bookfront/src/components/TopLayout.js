@@ -46,6 +46,7 @@ const TopLayout = ({children}) => {
 
 const [bookName,setBookName]=useState('')
 
+const {user}=useSelector((state)=>state)
 
 const onChangeBook=useCallback((e)=>{
     setBookName(e.target.value)
@@ -77,11 +78,13 @@ const Home=useCallback(()=>{
         <AppWrapper>
         {/* <img src="https://media-sparta.s3.ap-northeast-2.amazonaws.com/media/images/patagonia_main_logo.png"/> */}
         <a onClick={Home}>책리뷰</a>
+        <Link to='/Home'>책등록</Link>
+        <Link to="/booksearch">책검색</Link>
             <InputSearch  placeholder='책을 검색하세요' onChange={onChangeBook} onSearch={bookSearch}></InputSearch>
                
             <IconWrapper>
-                <p><UserOutlined /></p>
-                <p><LogoutOutlined /></p>
+            {user&&<Link to="/mypage"><p><UserOutlined /></p></Link>}
+                {/* <p><LogoutOutlined /></p> */}
             </IconWrapper>
  
         </AppWrapper>

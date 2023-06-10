@@ -48,11 +48,9 @@ const LoginForm = () => {
         <Input type="password" name='user-password' value={password} onChange={onChangePassword} ></Input>
     </ButtonWrapper>
     <Button type='primary' htmlType='submit' loading={loginLoading}>로그인</Button>
-    <Button type='primary'>
-        <Link href='/signup'>
-        <a>회원가입</a>
+        <Link to='/signup'>
+        <Button type='primary'>회원가입</Button>
         </Link>
-    </Button>
     
 </Form>
   )

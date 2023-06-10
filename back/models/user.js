@@ -23,7 +23,7 @@ module.exports=(sequelize,DataTypes)=>{
         db.User.belongsToMany(db.Post,{through:'Like',as:'Liked'})//좋아요관계 유저입장에서 봤을때 liked는 postId가 들어오니까 좋아요된걸 말해준다
         db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followers', foreignKey: 'FollowingId' });
         db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followings', foreignKey: 'FollowerId' });
-
+        // db.User.belongsToMany(db.Book,{through:'userBook',as:'readed'})
 
     };
     return User;
