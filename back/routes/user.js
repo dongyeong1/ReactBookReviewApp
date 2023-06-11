@@ -23,7 +23,11 @@ router.get('/',async(req,res,next)=>{
                 },
                 include: [{
                   model: Post,
-                  attributes: ['id'],
+                  include:[{
+                      model:User,
+                      as:'Likers',
+                      attributes:['id']
+                  }]
                 }, {
                   model: User,
                   as: 'Followings',
@@ -71,7 +75,11 @@ router.post('/login', (req, res, next) => {
           },
           include: [{
             model: Post,
-            attributes: ['id'],
+            include:[{
+                model:User,
+                as:'Likers',
+                attributes:['id']
+            }]
           }, {
             model: User,
             as: 'Followings',

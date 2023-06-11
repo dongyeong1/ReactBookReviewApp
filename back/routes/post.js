@@ -151,5 +151,49 @@ router.patch('/:postId/like', async (req, res, next) => { // PATCH /post/1/like
     }
   });
 
+  router.patch('/:postId/edit', async (req, res, next) => { // PATCH /post/1/like
+    try {
+      const post = await Post.findOne({ where: { id: req.params.postId }});
+      if (!post) {
+        return res.status(403).send('게시글이 존재하지 않습니다.');
+      }
+      await Post.update({
+          content:req.body.content,
+          title:req.body.title,
+          rate:req.body.rate
+      },{
+          where:{
+              id:req.params.postId
+          }
+      })
+
+       const updatedPost=await Post.findOne({ where: { id: req.params.postId }});
+      res.status(200).json({ PostId: post.id, updatedPost: updatedPost });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  });
+
+
+  router.delete('/:postId/delete', async (req, res, next) => { // DELETE /post/1/like
+    try {
+      const post = await Post.findOne({ where: { id: req.params.postId }});
+      if (!post) {
+        return res.status(403).send('게시글이 존재하지 않습니다.');
+      }
+      await Post.destroy({
+          where:{
+              id:req.params.postId
+          }
+      })
+      res.status(201).json({PostId:parseInt(req.params.postId,10)}) 
+       } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  });
+
+
 
 module.exports=router

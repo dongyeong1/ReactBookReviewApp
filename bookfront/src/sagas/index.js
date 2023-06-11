@@ -1,5 +1,5 @@
 import {all,fork,call,take,put, takeEvery, takeLatest, delay} from 'redux-saga/effects'
-import { ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_POST_REQUEST, ADD_POST_SUCCESS, BOOK_POSTS_REQUEST, BOOK_POSTS_SUCCESS, FOLLOW_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS, LIKE_POST_FAIL, LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LOAD_MY_INFO_FAILURE, LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOGIN_REQUEST, LOGIN_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, POST_LOAD_REQUEST, POST_LOAD_SUCCESS, SEARCH_BOOK_FAIL, SEARCH_BOOK_REQUEST, SEARCH_BOOK_SUCCESS, SIGNUP_REQUEST, SIGNUP_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNLIKE_POST_FAIL, UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS } from '../reducer'
+import { ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_POST_REQUEST, ADD_POST_SUCCESS, BOOK_POSTS_REQUEST, BOOK_POSTS_SUCCESS, FOLLOW_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS, LIKE_POST_FAIL, LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LOAD_MY_INFO_FAILURE, LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOGIN_REQUEST, LOGIN_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, POST_DELETE_FAIL, POST_DELETE_REQUEST, POST_DELETE_SUCCESS, POST_EDIT_FAIL, POST_EDIT_REQUEST, POST_EDIT_SUCCESS, POST_LOAD_REQUEST, POST_LOAD_SUCCESS, SEARCH_BOOK_FAIL, SEARCH_BOOK_REQUEST, SEARCH_BOOK_SUCCESS, SIGNUP_REQUEST, SIGNUP_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNLIKE_POST_FAIL, UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS } from '../reducer'
 
 import axios from 'axios';
 
@@ -374,6 +374,47 @@ function likePostAPI(data) {
       });
     }
   }
+
+
+  function deletePostAPI(data) {
+    return axios.delete(`http://localhost:3065/post/${data}/delete`);
+  }
+  
+  function* deletePost(action) {
+    try {
+      const result = yield call(deletePostAPI,action.data);
+      yield put({
+        type: POST_DELETE_SUCCESS,
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
+      yield put({
+        type: POST_DELETE_FAIL,
+        error: err.response.data,
+      });
+    }
+  }
+  
+  function editPostAPI(data) {
+    return axios.patch(`http://localhost:3065/post/${data.postId}/edit`);
+  }
+  
+  function* editPost(action) {
+    try {
+      const result = yield call(editPostAPI,action.data);
+      yield put({
+        type: POST_EDIT_SUCCESS,
+        data: result.data,
+      });
+    } catch (err) {
+      console.log(err);
+      yield put({
+        type: POST_EDIT_FAIL,
+        error: 'Err',
+      });
+    }
+  }
   
 
   function logOutAPI() {
@@ -450,6 +491,12 @@ function* watchFollow() {
     yield takeLatest(LOG_OUT_REQUEST, logOut);
   }
 
+  function* watchEditPost() {
+    yield takeLatest(POST_EDIT_REQUEST, editPost);
+  }
+  function* watchDeletePost() {
+    yield takeLatest(POST_DELETE_REQUEST, deletePost);
+  }
 export default function* rootSaga(){
  
     
@@ -469,6 +516,8 @@ export default function* rootSaga(){
         fork(watchUnlikePost),
         fork(watchFollow),
         fork(watchUnfollow),
+        fork(watchEditPost),
+        fork(watchDeletePost)
     ])
 
 }

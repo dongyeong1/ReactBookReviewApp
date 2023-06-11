@@ -41,6 +41,12 @@ import shortId from 'shortid'
   unfollowLoading: false, // 언팔로우 시도중
   unfollowDone: false,
   unfollowError: null,
+  postEditLoading:false,
+  postEditSuccess:false,
+  postEditError:null,
+  postDeleteLoading:false,
+  postDeleteSuccess:false,
+  postDeleteError:null,
 };
 
 
@@ -122,9 +128,53 @@ export const LOG_OUT_REQUEST = 'LOG_OUT_REQUEST';
 export const LOG_OUT_SUCCESS = 'LOG_OUT_SUCCESS';
 export const LOG_OUT_FAILURE = 'LOG_OUT_FAILURE';
 
+export const POST_EDIT_REQUEST='POST_EDIT_REQUEST';
+export const POST_EDIT_SUCCESS='POST_EDIT_SUCCESS';
+export const POST_EDIT_FAIL='POST_EDIT_FAIL';
+
+export const POST_DELETE_REQUEST='POST_DELETE_REQUEST';
+export const POST_DELETE_SUCCESS='POST_DELETE_SUCCESS';
+export const POST_DELETE_FAIL='POST_DELETE_FAIL'
+
 
 const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
         switch(action.type){
+
+            case POST_DELETE_REQUEST:
+                draft.postDeleteLoading = true;
+                draft.postDeleteSuccess = null;
+                draft.postEditSuccess = false;
+                break;
+              case POST_DELETE_SUCCESS:
+                draft.postDeleteLoading = false;
+                draft.postDeleteSuccess = true;
+                draft.user.Posts=draft.user.Posts.filter((v)=>v.id!==action.data.PostId)
+                // const postIndex=draft.posts.findIndex((v)=>v.id===action.data.PostId)
+                // draft.posts[postIndex]=action.data.updatedPost
+
+                break;
+              case POST_DELETE_FAIL:
+                draft.postDeleteLoading = false;
+                draft.postDeleteError = action.error;
+                break;
+
+            case POST_EDIT_REQUEST:
+                draft.postEditLoading = true;
+                draft.postEditError = null;
+                draft.postEditSuccess = false;
+                break;
+              case POST_EDIT_SUCCESS:
+                draft.postEditLoading = false;
+                draft.postEditSuccess = true;
+                const postIndex=draft.user.Posts.findIndex((v)=>v.id===action.data.PostId)
+                draft.posts[postIndex]=action.data.updatedPost
+
+                break;
+              case POST_EDIT_FAIL:
+                draft.postEditLoading = false;
+                draft.postEditError = action.error;
+                break;
+
             case LOG_OUT_REQUEST:
                 draft.logOutLoading = true;
                 draft.logOutError = null;
