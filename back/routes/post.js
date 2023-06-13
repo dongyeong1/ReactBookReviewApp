@@ -118,7 +118,7 @@ router.post('/loadPost',async(req,res)=>{
         res.status(201).json(post)
 
     }catch(err){
-console.log('eeeeee',err)
+console.log(err)
     }
 
 })
@@ -151,7 +151,7 @@ router.patch('/:postId/like', async (req, res, next) => { // PATCH /post/1/like
     }
   });
 
-  router.patch('/:postId/edit', async (req, res, next) => { // PATCH /post/1/like
+  router.post('/:postId/edit', async (req, res, next) => { // PATCH /post/1/like
     try {
       const post = await Post.findOne({ where: { id: req.params.postId }});
       if (!post) {
@@ -170,7 +170,7 @@ router.patch('/:postId/like', async (req, res, next) => { // PATCH /post/1/like
        const updatedPost=await Post.findOne({ where: { id: req.params.postId }});
       res.status(200).json({ PostId: post.id, updatedPost: updatedPost });
     } catch (error) {
-      console.error(error);
+        console.log(error)
       next(error);
     }
   });

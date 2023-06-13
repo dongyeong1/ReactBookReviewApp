@@ -60,7 +60,7 @@ router.post('/login', (req, res, next) => {
         return next(err);
       }
       if (info) {//클라이언트에러
-        console.log('클라',info)
+        console.log(info)
         return res.status(401).send(info.reason);
       }
       return req.login(user, async (loginErr) => {//req.login실행될때 passport->index의 serializeUser실행됨
