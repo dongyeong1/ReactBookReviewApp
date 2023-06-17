@@ -6,7 +6,7 @@ import { NAVER_LOGIN_REQUEST } from '../reducer';
 const NaverLogin = () => {
 
     useEffect(()=>{
-        console.log('asdasdas',process.env.REACT_APP_NAVER_LOGIN_CLIENT_ID)
+        
     },[])
     let client_id = process.env.REACT_APP_NAVER_LOGIN_CLIENT_ID;
 
