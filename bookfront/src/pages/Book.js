@@ -1,71 +1,79 @@
 import { Button,Modal } from 'antd'
+// import Card from 'antd/lib/card/Card'
+import { Card } from 'antd'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import {  useNavigate, useParams } from 'react-router-dom'
 import PostCard from '../components/PostCard'
-import PostForm from '../components/PostForm'
-import { BOOK_POSTS_REQUEST, BOOK_POSTS_SUCCESS, LOAD_BOOK, LOAD_MY_INFO_REQUEST, POST_LOAD_REQUEST } from '../reducer'
+import { BOOK_LOAD_REQUEST, BOOK_POSTS_REQUEST, LOAD_MY_INFO_REQUEST, NAVER_LOGIN_REQUEST, } from '../reducer'
 
 const Book = () => {
   const navigate=useNavigate()
     const {id}=useParams();
-    const {books,posts,post}=useSelector((state)=>state)
+    const {posts,book}=useSelector((state)=>state)
+
+    // var book=books.find((v)=>v.isbn===id)
 
     const dispatch=useDispatch()
-
     useEffect(()=>{
-      dispatch({
-          type:LOAD_MY_INFO_REQUEST
-      })
+      if(localStorage.getItem('login-access-token')){
+        dispatch({
+          type:NAVER_LOGIN_REQUEST
+        })
+      }else{
+        dispatch({
+                type:LOAD_MY_INFO_REQUEST
+            })
+      }
+      
+    },[])
+  
+  useEffect(()=>{
+    dispatch({
+      type:BOOK_LOAD_REQUEST,
+      data:id
+    })
   },[])
 
+
   useEffect(()=>{
+    // console.log('asdsa',book)
+
       dispatch({
         type:BOOK_POSTS_REQUEST,
         data:id
       })
   },[])
 
-    // useEffect(()=>{
-    //   if(post){
-    //     successModals()
-    //   }
-    // },[post])
 
-
-    // const successModals = () => {
-    //   Modal.success({
-    //     content: '책보기',
-    //     onOk() {navigate(`/post/${post.id}`)},
-    //   });
-    // };
-
-    
-
-// const postLoad=(data)=>{
-//   dispatch({
-//       type:POST_LOAD_REQUEST,
-//       data:{
-//           postId:data
-//       }
-//   })
-// }
-// const liked=posts.L
   return (
     <div>
-        <div>{posts&&posts[0].bookname}</div>
-        {posts&&<img src={posts[0].src} style={{width:300}}></img>}
-        {/* <PostForm id={id}></PostForm> */}
-        {posts&&posts.map((v)=>(
+      <Card
+      
+      style={{width:500,height:110,marginBottom:20,borderRadius:20,margin:'20px auto',backgroundColor:'lightgray'}}>
+      {/* {book&&<img src={book.image} style={{width:200}}></img>} */}
+      <Card.Meta
+          avatar={<img src={book.image} style={{width:50}}></img>}
+          // title={book.title}
+        //   description={post.text}
+        description={book.title}
+        
+        />
+      </Card>
+              {/* 
+
+        <div>{book&&book.title}</div> */}
+        {posts?posts.map((v)=>(
           <div>
         <PostCard bookpost={v}></PostCard>
-        {/* <Link to={`/post/${v.id}`}>
-        <Button type='primary' >상세보기</Button>
-        </Link> */}
+      
         </div>
-            ))}
+            )):<div>등록된게시물이없습니다</div>}
     </div>
   )
 }
 
 export default Book
+
+// XML
+// https://openapi.naver.com/v1/search/book.json

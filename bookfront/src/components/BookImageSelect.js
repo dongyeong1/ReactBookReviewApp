@@ -14,19 +14,21 @@ const BookImageSelect = ({showModal,searchedBook}) => {
   onClick={showModal}
   hoverable
   style={{
-    width: 240,
+    width: 200,
+    height:200
   }}
-  cover={<img alt="example" src={searchedBook.image} />}
+  cover={<img alt="example" height='150' src={searchedBook.image} />}
   >
-  +다른책추가하기
+  +다른책 검색하기
   <Card.Meta title={searchedBook.title} ></Card.Meta>
   </Card>:<Card
     onClick={showModal}
     hoverable
     style={{
-      width: 300,
+      width: 200,
+      height:200
     }}
-    cover={<FileSearchOutlined style={{ fontSize: '100px', color: '#08c' }} />}
+    cover={<FileSearchOutlined style={{ fontSize: '100px', color: '#08c',justifyContent:'center' }} />}
     >
     +책 검색하기
     </Card>}

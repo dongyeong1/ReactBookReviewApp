@@ -1,47 +1,60 @@
 import './App.css';
-import {BrowserRouter,Route,Routes,Link} from 'react-router-dom'
-import Index from './pages/Search'
+import {BrowserRouter,Route,Routes} from 'react-router-dom'
 import 'antd/dist/antd.css'
-// import Header from './component/header';
+
 import {Col,Row} from 'antd'
-// import UserProfile from './component/userProfile';
-import {useState} from 'react'
+
 import Signup from './pages/SignUp';
 import TopLayout from './components/TopLayout';
-// import LoginForm from './component/LoginForm';
-import { Redirect } from "react-router-dom"
-import Home from './pages/Home';
+
+import Review from './pages/Review';
 import Book from './pages/Book';
 import BookSearch from './pages/BookSearch';
-import Post from './pages/Post';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import UserProfile from './components/UserProfile';
 import LoginForm from './components/LoginForm';
 import MyPage from './pages/MyPage';
-// import { redirect } from 'react-router-dom';
+import Index from './pages';
+import Login from './pages/Login';
+import Oauth from './pages/Oauth';
+import { useEffect } from 'react';
+import { LOAD_MY_INFO_REQUEST, NAVER_LOGIN_REQUEST } from './reducer';
 function App() {
-
+  const dispatch=useDispatch()
   const {user}=useSelector((state)=>state)
+  // useEffect(()=>{
+  //   if(localStorage.getItem('login-access-token')){
+  //     dispatch({
+  //       type:NAVER_LOGIN_REQUEST
+  //     })
+  //   }else{
+  //     dispatch({
+  //             type:LOAD_MY_INFO_REQUEST
+  //         })
+  //   }
+    
+  // },[])
 
   return (
 
     <BrowserRouter>
     <div className="App">
     <TopLayout></TopLayout>
-    {/* <Header></Header> */}
-    <Row>
+    {/* <Row>
       <Col span={6}>
-       {/* {abc?<UserProfile setAbc={setAbc} name={name} setName={setName}/>:<LoginForm  setAbc={setAbc}name={name} setName={setName}/>
 
-       }  */}
        {user?<UserProfile></UserProfile>:<LoginForm></LoginForm>}
 
       </Col>
-      <Col span={18}>
+      <Col span={18}> */}
        
           
-          <Routes>
-          <Route exact path='/Home'  element={<Home></Home>}>
+       <Routes>
+          <Route exact path='/'  element={<Index></Index>}>
+          </Route>
+          <Route exact path='/Oauth'  element={<Oauth></Oauth>}>
+          </Route>
+          <Route exact path='/review'  element={<Review></Review>}>
           </Route>
           <Route exact path='/booksearch'  element={<BookSearch></BookSearch>}>
           </Route>
@@ -49,16 +62,16 @@ function App() {
           </Route>
           <Route exact path='/book/:id' element={<Book></Book>}>
           </Route>
-          <Route exact path='/post/:id' element={<Post></Post>}>
-          </Route>
           <Route exact path='/mypage' element={<MyPage></MyPage>}>
+          </Route>
+          <Route exact path='/login' element={<Login></Login>}>
           </Route>
           
         </Routes>
-      </Col>
+      {/* </Col>
     
     </Row>
-     
+      */}
     </div>
     </BrowserRouter>
   );

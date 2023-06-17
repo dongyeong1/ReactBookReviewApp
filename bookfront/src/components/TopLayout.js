@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import App from '../App'
-import {Row,Col, Input} from 'antd'
+import {Row,Col, Input,Button} from 'antd'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { ADD_BOOK, SEARCH_BOOK_REQUEST } from '../reducer'
 import { UserOutlined,LogoutOutlined} from '@ant-design/icons';
-import { Link, Router } from 'react-router-dom'
+import { Link, Router, useNavigate } from 'react-router-dom'
 
 
 const AppWrapper=styled.div`
@@ -18,18 +18,23 @@ align-items: center ;
 background-color:lightgray;
 height:80px;
 
+span{
+    &:last-child{
+        margin-right:50px;
+    }
+    &:first-child{
+        margin-left:100px;
+    }
+}
 
 `
 
 const IconWrapper=styled.div`
-display: flex;
-flex-direction: row;
-justify-content: space-between;
-align-items: center ;
 
+margin-right:100px;
 
-&>p{
-    margin-right:30px;
+&>span{
+   
 }
 `
 
@@ -44,60 +49,44 @@ margin-right:100px;
 const TopLayout = ({children}) => {
 
 
-const [bookName,setBookName]=useState('')
 
 const {user}=useSelector((state)=>state)
-
-const onChangeBook=useCallback((e)=>{
-    setBookName(e.target.value)
-    console.log(e.target.value)
-},[bookName])
-
-// const [bookList,setBookList]=useState('')
-
+const navigate=useNavigate()
 const dispatch=useDispatch();
 
-const {books}=useSelector((state)=>state)
+const logOut=useCallback(()=>{
+    localStorage.removeItem("login-access-token");
+    localStorage.removeItem("login-token-type");
 
-const bookSearch=useCallback(()=>{
-    dispatch({
-        type:SEARCH_BOOK_REQUEST,
-        data:bookName
-    })
-   
-   console.log('asd')
 
-},[bookName,books])
-
-const Home=useCallback(()=>{
-    window.location.replace('/');
+    navigate('/booksearch')
 },[])
+
+
+
 
   return (
     <div>
         <AppWrapper>
-        {/* <img src="https://media-sparta.s3.ap-northeast-2.amazonaws.com/media/images/patagonia_main_logo.png"/> */}
-        <a onClick={Home}>책리뷰</a>
-        <Link to='/Home'>책등록</Link>
-        <Link to="/booksearch">책검색</Link>
-            <InputSearch  placeholder='책을 검색하세요' onChange={onChangeBook} onSearch={bookSearch}></InputSearch>
+        <Link to='/'><span>홈</span></Link>
+        {/* <Link to='/signup'><span>회원가입</span></Link> */}
+        <Link to='/review'><span>독후감쓰기</span></Link>
+        <Link to="/booksearch"><span>책검색</span></Link>
+        {localStorage.getItem('login-access-token')?
+        <span onClick={logOut} style={{width:100}}>로그아웃</span>:
+        <Link to='/login'><span style={{width:100}}>로그인</span></Link>
+
+        }
+
+         
                
             <IconWrapper>
-            {user&&<Link to="/mypage"><p><UserOutlined /></p></Link>}
+            {user&&<Link to="/mypage"><p><UserOutlined style={{fontSize:25}}/></p></Link>}
                 {/* <p><LogoutOutlined /></p> */}
             </IconWrapper>
  
         </AppWrapper>
-        {/* {books&&books.map((v)=>(
-           <div>
-           <div>{v.title}</div>
-           <img src={v.image} ></img>
-           </div>
-
-        ))} */}
-        {/* <Row>
-            <Col>{children}</Col>
-        </Row> */}
+      
     </div>
   )
 }

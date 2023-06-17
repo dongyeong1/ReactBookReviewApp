@@ -9,6 +9,8 @@ const session = require("express-session");
 const cookieParser=require('cookie-parser')
 const dotenv=require('dotenv')
 
+const axios=require('axios')
+
 dotenv.config()
 
 const app=express();
@@ -38,9 +40,9 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.get('/',(req,res)=>{
-    res.send('asd')
-})
+
+    //   .then(ans => res.send(ans));
+//   });
 
 
 app.use('/post',postRouter)

@@ -1,20 +1,19 @@
-import {all,fork,call,take,put, takeEvery, takeLatest, delay} from 'redux-saga/effects'
-import { ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_POST_REQUEST, ADD_POST_SUCCESS, BOOK_POSTS_REQUEST, BOOK_POSTS_SUCCESS, FOLLOW_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS, LIKE_POST_FAIL, LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LOAD_MY_INFO_FAILURE, LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOGIN_REQUEST, LOGIN_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, POST_DELETE_FAIL, POST_DELETE_REQUEST, POST_DELETE_SUCCESS, POST_EDIT_FAIL, POST_EDIT_REQUEST, POST_EDIT_SUCCESS, POST_LOAD_REQUEST, POST_LOAD_SUCCESS, SEARCH_BOOK_FAIL, SEARCH_BOOK_REQUEST, SEARCH_BOOK_SUCCESS, SIGNUP_REQUEST, SIGNUP_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNLIKE_POST_FAIL, UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS } from '../reducer'
+import {all,fork,call,put, takeLatest, delay} from 'redux-saga/effects'
+import { ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_POST_REQUEST, ADD_POST_SUCCESS, BOOK_LOAD_REQUEST, BOOK_LOAD_SUCCESS, BOOK_POSTS_REQUEST, BOOK_POSTS_SUCCESS, FOLLOW_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS, LIKE_POST_FAIL, LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LOAD_MY_INFO_FAILURE, LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, NAVER_LOGIN_FAIL, NAVER_LOGIN_REQUEST, NAVER_LOGIN_SUCCESS, POST_DELETE_FAIL, POST_DELETE_REQUEST, POST_DELETE_SUCCESS, POST_EDIT_FAIL, POST_EDIT_REQUEST, POST_EDIT_SUCCESS, POST_LOAD_REQUEST, POST_LOAD_SUCCESS, SEARCH_BOOK_FAIL, SEARCH_BOOK_REQUEST, SEARCH_BOOK_SUCCESS, SIGNUP_REQUEST, SIGNUP_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNLIKE_POST_FAIL, UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS } from '../reducer'
+import { useNavigate } from 'react-router-dom'
 
 import axios from 'axios';
+import NaverLogin from '../components/NaverLogin';
 
 
 
 axios.defaults.withCredentials=true
 
 function searchBookAPI(data){
-    // return axios.post('/post',data,{
-    //     withCredentials:true
-    // })
 
-    const url=`/v1/search/book.json?query=${data}&sort=date`
-    const clientId = "NqCz0y0licjXZjQJ46Wu";
-    const clientSecret = "1QsSIEHHYS";
+    const url=`/v1/search/book.json?query=${data}&sort=date&display=50`
+    const clientId = process.env.REACT_APP_BOOK_CLIENT_ID;
+    const clientSecret = process.env.REACT_APP_BOOK_CLIENT_SECRET;
     
     return axios.get(url
         ,{
@@ -31,9 +30,7 @@ function searchBookAPI(data){
 function* searchBook(action){
 
     try{
-        // const id=shortid.generate()
-        // yield delay(1000)
-        // console.log(action.data,'asdsadsa')
+      
         const result =yield call(searchBookAPI,action.data) //call은동기니깐 put할때까지 기다려준다
         yield put({
             type:SEARCH_BOOK_SUCCESS,
@@ -42,10 +39,45 @@ function* searchBook(action){
     
         
     }catch(err){
-        // yield put({
-        //     type: SEARCH_BOOK_FAIL,
-        //     data:err.response.data,
-        // })
+
+        console.log(err)
+    }
+    
+}
+
+
+
+function bookLoadAPI(data){
+
+    const url=`/v1/search/book_adv.json?d_isbn=${data}&start=1`
+    const clientId = process.env.REACT_APP_BOOK_CLIENT_ID;
+    const clientSecret = process.env.REACT_APP_BOOK_CLIENT_SECRET;
+    
+    return axios.get(url
+        ,{
+         headers:{
+           Accept: "application/json",
+           "X-Naver-Client-Id": clientId,
+           "X-Naver-Client-Secret": clientSecret,
+         }
+       })
+}
+
+
+
+function* bookLoad(action){
+
+    try{
+      
+        const result =yield call(bookLoadAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        yield put({
+            type:BOOK_LOAD_SUCCESS,
+            data:result.data.items
+        })
+    
+        
+    }catch(err){
+
         console.log(err)
     }
     
@@ -55,10 +87,9 @@ function* searchBook(action){
 
 
 
+
 function signUpAPI(data){
-    // return axios.post('/post',data,{
-    //     withCredentials:true
-    // })
+
     return axios.post('http://localhost:3065/user/signup',{
         email:data.email,
         password:data.password,
@@ -72,9 +103,7 @@ function signUpAPI(data){
 function* signUp(action){
 
     try{
-        // const id=shortid.generate()
-        // yield delay(1000)
-        // console.log(action.data,'asdsadsa')
+       
         const result =yield call(signUpAPI,action.data) //call은동기니깐 put할때까지 기다려준다
         yield put({
             type:SIGNUP_SUCCESS,
@@ -105,9 +134,7 @@ function loginAPI(data){
 function* login(action){
 
     try{
-        // const id=shortid.generate()
-        // yield delay(1000)
-        // console.log(action.data,'asdsadsa')
+        
         const result =yield call(loginAPI,action.data) //call은동기니깐 put할때까지 기다려준다
         yield put({
             type:LOGIN_SUCCESS,
@@ -117,8 +144,11 @@ function* login(action){
     
         
     }catch(err){
-      
-        console.log(err)
+        yield put({
+            type:LOGIN_FAIL,
+            data:err.response.data
+        })
+        console.log('loginErr',err)
     }
     
 }
@@ -133,7 +163,8 @@ function addPostAPI(data){
         rate:data.rate,
         isbn:data.isbn,
         image:data.image,
-        bookname:data.bookname
+        bookname:data.bookname,
+        userId:data.userId
     })
    
 }
@@ -143,9 +174,7 @@ function addPostAPI(data){
 function* addPost(action){
 
     try{
-        // const id=shortid.generate()
-        // yield delay(1000)
-        // console.log(action.data,'asdsadsa')
+       
         const result =yield call(addPostAPI,action.data) //call은동기니깐 put할때까지 기다려준다
         yield put({
             type:ADD_POST_SUCCESS,
@@ -167,8 +196,8 @@ function addCommentAPI(data){
  
     return axios.post('http://localhost:3065/post/addcomment',{
         comment:data.comment,
-        // userId:data.userId,
         postId:data.postId,
+        userId:data.userId
        
     })
    
@@ -179,9 +208,7 @@ function addCommentAPI(data){
 function* addComment(action){
 
     try{
-        // const id=shortid.generate()
-        // yield delay(1000)
-        // console.log(action.data,'asdsadsa')
+     
         const result =yield call(addCommentAPI,action.data) //call은동기니깐 put할때까지 기다려준다
         yield put({
             type:ADD_COMMENT_SUCCESS,
@@ -211,9 +238,7 @@ function bookPostsAPI(data){
 function* bookPosts(action){
 
     try{
-        // const id=shortid.generate()
-        // yield delay(1000)
-        // console.log(action.data,'asdsadsa')
+        
         const result =yield call(bookPostsAPI,action.data) //call은동기니깐 put할때까지 기다려준다
         yield put({
             type:BOOK_POSTS_SUCCESS,
@@ -244,9 +269,7 @@ function loadPostAPI(data){
 function* loadPost(action){
 
     try{
-        // const id=shortid.generate()
-        // yield delay(1000)
-        // console.log(action.data,'asdsadsa')
+  
         const result =yield call(loadPostAPI,action.data) //call은동기니깐 put할때까지 기다려준다
         yield put({
             type:POST_LOAD_SUCCESS,
@@ -267,7 +290,9 @@ function* loadPost(action){
 
 
 function likePostAPI(data) {
-    return axios.patch(`http://localhost:3065/post/${data}/like`);
+    return axios.patch(`http://localhost:3065/post/${data.postId}/like`,{
+        userId:data.userId
+    });
   }
   
   function* likePost(action) {
@@ -289,11 +314,15 @@ function likePostAPI(data) {
 
   
   function unlikePostAPI(data) {
-    return axios.delete(`http://localhost:3065/post/${data}/like`);
+    return axios.patch(`http://localhost:3065/post/${data.postId}/unlike`,
+    {userId:data.userId}
+    );
   }
   
   function* unlikePost(action) {
+      
     try {
+        console.log('actiondata',action.data)
       const result = yield call(unlikePostAPI, action.data);
       yield put({
         type: UNLIKE_POST_SUCCESS,
@@ -397,7 +426,11 @@ function likePostAPI(data) {
   }
   
   function editPostAPI(data) {
-    return axios.patch(`http://localhost:3065/post/${data.postId}/edit`);
+    return axios.post(`http://localhost:3065/post/${data.postId}/edit`,{
+        content:data.content,
+        title:data.title,
+        rate:data.rate
+    });
   }
   
   function* editPost(action) {
@@ -408,7 +441,7 @@ function likePostAPI(data) {
         data: result.data,
       });
     } catch (err) {
-      console.log(err);
+      console.log('asdasdasdasd',err);
       yield put({
         type: POST_EDIT_FAIL,
         error: 'Err',
@@ -436,6 +469,60 @@ function likePostAPI(data) {
       });
     }
   }
+
+
+
+
+  function NaverLoginAPI(data) {
+    let client_id = process.env.REACT_APP_NAVER_LOGIN_CLIENT_ID;
+    const access_token=localStorage.getItem('login-access-token')
+    const token_type=localStorage.getItem('login-token-type')
+
+    let client_secret = process.env.REACT_APP_NAVER_LOGIN_CLIENT_SECRET;
+    return   axios({
+        method:'post',
+        url:'http://localhost:3065/user/naverlogin',
+        data:{access_token,token_type},
+        headers:{
+            Accept: "application/json",
+            'X-Naver-Client-Id': client_id,
+            'X-Naver-Client-Secret': client_secret
+        }
+        
+  
+
+    })
+    
+    // axios.post(naver_api_url,{
+    //     headers:{
+    //         Accept: "application/json",
+    //         'X-Naver-Client-Id': client_id,
+    //         'X-Naver-Client-Secret': client_secret
+    //     }
+    // })
+    
+  }
+  
+  function* naverLogin(action) {
+
+    try {
+
+      const result = yield call(NaverLoginAPI,action.data);
+      console.log('sagadata',result.data)
+      // yield delay(1000);
+      yield put({
+        type: NAVER_LOGIN_SUCCESS,
+        data:result.data
+      });
+    } catch (err) {
+      console.log('naverError',err);
+      yield put({
+        type: NAVER_LOGIN_FAIL,
+        error: 'err',
+      });
+    }
+  }
+  
   
 
 function* watchSearchBook() {
@@ -497,6 +584,15 @@ function* watchFollow() {
   function* watchDeletePost() {
     yield takeLatest(POST_DELETE_REQUEST, deletePost);
   }
+  function* watchBookLoad() {
+    yield takeLatest(BOOK_LOAD_REQUEST, bookLoad);
+  }
+
+
+  function* watchNaverLogin() {
+    yield takeLatest(NAVER_LOGIN_REQUEST, naverLogin);
+  }
+
 export default function* rootSaga(){
  
     
@@ -517,7 +613,9 @@ export default function* rootSaga(){
         fork(watchFollow),
         fork(watchUnfollow),
         fork(watchEditPost),
-        fork(watchDeletePost)
+        fork(watchDeletePost),
+        fork(watchBookLoad),
+        fork(watchNaverLogin)
     ])
 
 }

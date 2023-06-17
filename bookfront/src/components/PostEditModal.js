@@ -1,18 +1,26 @@
-import React,{useCallback,useEffect,useState} from 'react'
-import { Modal ,Input, Button,Form,Rate} from 'antd'
-import { useDispatch, useSelector } from 'react-redux'
+import React,{useCallback,useState} from 'react'
+import { Input, Button,Rate,Modal} from 'antd'
+import { useDispatch } from 'react-redux'
 import { POST_EDIT_REQUEST } from '../reducer';
-const PostEditModal = ({editModal,setEditModal,post,postTitle}) => {
-    const dispatch=useDispatch();
-    const [title,setTitle]=useState('')
-    const [content,setContent]=useState('')
-    const [rate,setRate]=useState('')
-    const {posts,user}=useSelector((state)=>state)
-    // const post=user.Posts.find((v)=>v.id===postId)
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
-    // useEffect(()=>{
-    //     console.log('postt',post)
-    // },[post])
+
+
+import Modals from 'react-modal';
+
+
+
+
+const PostEditModal = ({editModal,setEditModal,post}) => {
+    const { confirm } = Modal;
+
+    const dispatch=useDispatch();
+    const [title,setTitle]=useState(post.title)
+    const [content,setContent]=useState(post.content)
+    const [rate,setRate]=useState(post.rate)
+
+    
+    
 
     const onChangeTitle=useCallback((e)=>{
         setTitle(e.target.value)
@@ -44,17 +52,39 @@ const PostEditModal = ({editModal,setEditModal,post,postTitle}) => {
                 }
                     })
     },[title,content,rate,post])
+
+
+    const showConfirm =useCallback(()=>{
+        confirm({
+            title: '수정하시겠습니까?',
+            icon: <ExclamationCircleOutlined />,
+            
+        
+            onOk() {
+              console.log('OK');
+              EditPostSubmit()
+              setEditModal(false)
+              
+            },
+        
+            onCancel() {
+              console.log('Cancel');
+            },
+          });
+    }) 
   return (
       <div>
-    <Modal open={editModal} onCancel={handleCancel}>
-        <Form onFinish={EditPostSubmit}>
-            <div>asd{postTitle}</div>
-            제목<Input placeholder={post.title} value={title} onChange={onChangeTitle}></Input>
+    <Modals  isOpen={editModal} onRequestClose={handleCancel}>
+        <img style={{width:200}} src={post.src}></img>
+        <div>{post.bookname} </div>
+    
+            <div style={{marginTop:50}}>제목</div>
+            <Input  placeholder={post.title} value={title} onChange={onChangeTitle}></Input>
             내용<Input placeholder={post.content} value={content}  onChange={onChangeContent}></Input>
-            비율<Rate placeholder={post.rate} value={rate}  onChange={onChangeRate}></Rate>
-            <Button type='primary' htmlType='submit'>수정하기</Button>
-        </Form>
-    </Modal>
+            <div>비율</div>
+            <Rate placeholder={post.rate} value={rate} defaultValue={post.rate}  onChange={onChangeRate}></Rate>
+            <div><Button style={{marginTop:20}} type='primary' htmlType='submit' onClick={showConfirm}>수정하기</Button></div>
+    </Modals>
     </div>
   )
 }

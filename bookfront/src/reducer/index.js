@@ -2,6 +2,7 @@ import {produce} from 'immer';
 import shortId from 'shortid'
  const initState = {
     books:null,
+    book:null,
     posts:null,
     post:null,
     user:null,
@@ -33,13 +34,13 @@ import shortId from 'shortid'
     unlikePostSuccess:false,
     unlikePostError:null,
     loadMyInfoLoading: false, // 유저 정보 가져오기 시도중
-    loadMyInfoDone: false,
+    loadMyInfoSuccess: false,
     loadMyInfoError: null,
     followLoading: false, // 팔로우 시도중
-  followDone: false,
+  followSuccess: false,
   followError: null,
   unfollowLoading: false, // 언팔로우 시도중
-  unfollowDone: false,
+  unfollowSuccess: false,
   unfollowError: null,
   postEditLoading:false,
   postEditSuccess:false,
@@ -66,11 +67,14 @@ const dummyPost = (data) => ({
 });
 
 //액션
+
+export const BOOK_LOAD_REQUEST='BOOK_LOAD_REQUEST'
+export const BOOK_LOAD_SUCCESS='BOOK_LOAD_SUCCESS'
+export const BOOK_LOAD_FAIL='BOOK_LOAD_FAIL'
+
 export const ADD_BOOK = "ADD_BOOK";
 
 export const LOAD_BOOK='LOAD_BOOK'
-
-export const ADD_POST='ADD_POST'
 
 export const SEARCH_BOOK_REQUEST='SEARCH_BOOK_REQUEST'
 export const SEARCH_BOOK_SUCCESS='SEARCH_BOOK_SUCCESS'
@@ -136,9 +140,62 @@ export const POST_DELETE_REQUEST='POST_DELETE_REQUEST';
 export const POST_DELETE_SUCCESS='POST_DELETE_SUCCESS';
 export const POST_DELETE_FAIL='POST_DELETE_FAIL'
 
+export const BOOKS_REMOVE_REQUEST='BOOKS_REMOVE_REQUEST';
+export const BOOKS_REMOVE_SUCCESS='BOOKS_REMOVE_SUCCESS';
+export const BOOKS_REMOVE_FAIL='BOOKS_REMOVE_FAIL';
+
+export const NAVER_LOGIN_REQUEST='NAVER_LOGIN_REQUEST';
+export const NAVER_LOGIN_SUCCESS='NAVER_LOGIN_SUCCESS';
+export const NAVER_LOGIN_FAIL='NAVER_LOGIN_FAIL';
+
 
 const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
         switch(action.type){
+
+
+            case NAVER_LOGIN_REQUEST:
+                // draft.books=[];
+                break;
+
+            case NAVER_LOGIN_SUCCESS:
+                // draft.postDeleteLoading = true;
+                // draft.postDeleteSuccess = null;
+                // draft.postEditSuccess = false;
+                draft.user=action.data.exUser
+                break;
+              case NAVER_LOGIN_FAIL:
+                // draft.postDeleteLoading = false;
+                // draft.postDeleteSuccess = true;
+                // draft.user.Posts=draft.user.Posts.filter((v)=>v.id!==action.data.PostId)
+                
+
+                break;
+
+
+
+            case BOOK_LOAD_REQUEST:
+                // draft.books=[];
+                break;
+
+            case BOOK_LOAD_SUCCESS:
+                // draft.postDeleteLoading = true;
+                // draft.postDeleteSuccess = null;
+                // draft.postEditSuccess = false;
+                draft.book=action.data[0]
+                break;
+              case BOOK_LOAD_FAIL:
+                // draft.postDeleteLoading = false;
+                // draft.postDeleteSuccess = true;
+                // draft.user.Posts=draft.user.Posts.filter((v)=>v.id!==action.data.PostId)
+                
+
+                break;
+
+
+
+            case BOOKS_REMOVE_REQUEST:
+                draft.books=[];
+                break;
 
             case POST_DELETE_REQUEST:
                 draft.postDeleteLoading = true;
@@ -149,8 +206,7 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                 draft.postDeleteLoading = false;
                 draft.postDeleteSuccess = true;
                 draft.user.Posts=draft.user.Posts.filter((v)=>v.id!==action.data.PostId)
-                // const postIndex=draft.posts.findIndex((v)=>v.id===action.data.PostId)
-                // draft.posts[postIndex]=action.data.updatedPost
+                
 
                 break;
               case POST_DELETE_FAIL:
@@ -167,7 +223,7 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                 draft.postEditLoading = false;
                 draft.postEditSuccess = true;
                 const postIndex=draft.user.Posts.findIndex((v)=>v.id===action.data.PostId)
-                draft.posts[postIndex]=action.data.updatedPost
+                draft.user.Posts[postIndex]=action.data.updatedPost
 
                 break;
               case POST_EDIT_FAIL:
@@ -192,12 +248,12 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
             case LOAD_MY_INFO_REQUEST:
         draft.loadMyInfoLoading = true;
         draft.loadMyInfoError = null;
-        draft.loadMyInfoDone = false;
+        draft.loadMyInfoSuccess = false;
         break;
       case LOAD_MY_INFO_SUCCESS:
         draft.loadMyInfoLoading = false;
         draft.user = action.data;
-        draft.loadMyInfoDone = true;
+        draft.loadMyInfoSuceess = true;
         break;
       case LOAD_MY_INFO_FAILURE:
         draft.loadMyInfoLoading = false;
@@ -206,12 +262,12 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
         case FOLLOW_REQUEST:
             draft.followLoading = true;
             draft.followError = null;
-            draft.followDone = false;
+            draft.followSuccess = false;
             break;
           case FOLLOW_SUCCESS:
             draft.followLoading = false;
             draft.user.Followings.push({ id: action.data.UserId });
-            draft.followDone = true;
+            draft.followSuccess = true;
             break;
           case FOLLOW_FAILURE:
             draft.followLoading = false;
@@ -220,12 +276,12 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
           case UNFOLLOW_REQUEST:
             draft.unfollowLoading = true;
             draft.unfollowError = null;
-            draft.unfollowDone = false;
+            draft.unfollowSuccess = false;
             break;
           case UNFOLLOW_SUCCESS:
             draft.unfollowLoading = false;
             draft.user.Followings = draft.user.Followings.filter((v) => v.id !== action.data.UserId);
-            draft.unfollowDone = true;
+            draft.unfollowSuccess = true;
             break;
           case UNFOLLOW_FAILURE:
             draft.unfollowLoading = false;
@@ -236,11 +292,9 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                 break;
             case LOAD_BOOK:
                 draft.books=draft.books.find((v)=>v.isbn===action.data)
-                // const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+              
                 break;
-            // case ADD_POST:
-            //     draft.posts.unshift(dummyPost(action.data)) 
-            //     break;
+           
             case SEARCH_BOOK_REQUEST:
                 draft.searchbookLoading=true;
                 draft.searchbookSuccess=false;
@@ -248,7 +302,12 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
             case SEARCH_BOOK_SUCCESS:
                 draft.searchbookLoading=false;
                 draft.searchbookSuccess=true;
-                draft.books=action.data
+                if(action.data[0]){
+                    draft.books=action.data;
+
+                }else{
+                    draft.books=null;
+                }
                 break;
             case SEARCH_BOOK_FAIL:
                 draft.seachbookError='err'
@@ -274,7 +333,7 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                 draft.user=action.data
                 break;
             case LOGIN_FAIL:
-                draft.loginError='err'
+                draft.loginError=action.data
                 break;
             case ADD_POST_REQUEST:
                 draft.addPostLoading=true;
@@ -296,7 +355,9 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                     draft.addCommentLoading=false;
                     draft.addCommentSuccess=true;
                     // draft.post=action.data
-                    draft.post.Comments.unshift(action.data);
+                    const findIndex=draft.posts.findIndex((v)=>v.id===action.data.postId)
+                    console.log('findindexxxx',action.data.postId)
+                    draft.posts[findIndex].Comments.unshift(action.data.fullComment);
 
                     break;
             case ADD_COMMENT_FAIL:
@@ -310,7 +371,12 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                             draft.bookPostsLoading=false;
                             draft.bookPostsSuccess=true;
                             //W draft.post=action.data
-                            draft.posts=action.data;
+                            if(action.data[0]){
+                                draft.posts=action.data;
+
+                            }else{
+                                draft.posts=null;
+                            }
                             break;
             case BOOK_POSTS_FAIL:
                             draft.bookPostsError='err'
@@ -337,12 +403,10 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                                             draft.likePostLoading=false;
                                             draft.likePostSuccess=true;
                                             const post=draft.posts.find((v)=>v.id===action.data.PostId)
-                                            console.log('posttttt',post)
-                                            console.log('action.data',action.data)
+                                         
                                             post.Likers.push({ id: action.data.UserId });
 
-                                            // draft.post=action.data
-                                            // draft.post=action.data;
+                                            
                                             break;
                     case LIKE_POST_FAIL:
                                             draft.likePostError='err'
@@ -356,8 +420,7 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                                                     draft.unlikePostSuccess=true;
                             const post1 = draft.posts.find((v) => v.id=== action.data.PostId);
                             post1.Likers = post1.Likers.filter((v) => v.id !== action.data.UserId);
-                                                    // draft.post=action.data
-                                                    // draft.post=action.data;
+                                                   
                                                     break;
                  case UNLIKE_POST_FAIL:
                                                     draft.unlikePostError='err'

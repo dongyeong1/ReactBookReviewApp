@@ -1,19 +1,17 @@
 import React, { useCallback,useState,useEffect } from 'react'
 import { Input, Button,Form,Rate} from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
-import { ADD_POST, ADD_POST_REQUEST } from '../reducer'
+import {  ADD_POST_REQUEST } from '../reducer'
 import BookSearchFormModal from './BookSearchFormModal'
-import ImageCard from './ImageCard'
 import BookImageSelect from './BookImageSelect'
 import { useNavigate } from "react-router-dom";
 import {Modal} from 'antd'
-import {LoadingOutlined} from '@ant-design/icons'
 
 
 
 const PostForm = () => {
     const navigate = useNavigate();
-    const {post}=useSelector((state)=>state)
+    const {post,user}=useSelector((state)=>state)
     const [searchedBook,setSearchedBook]=useState(null)
     const [title,setTitle]=useState('')
     const [text,setText]=useState('')
@@ -47,10 +45,6 @@ const PostForm = () => {
         setModal(true)
     },[modal])
 
-    // const ss=()=>{
-    //     // 
-    //     console.log('as')
-    // }
 
      
 
@@ -60,6 +54,7 @@ const PostForm = () => {
         dispatch({
             type:ADD_POST_REQUEST,
             data:{
+                userId:user.id,
                 title,
                 text,
                 rate,
@@ -68,38 +63,50 @@ const PostForm = () => {
                 bookname:searchedBook.title
             }
         })
-        // dispatch({
-        //     type:ADD_POST,
-        //     data:{
-        //         isbn:id,
-        //         text
-        //     }
-        // })
-        // success()
+  
 
     },[text,searchedBook,title,rate])
 
     const successModals = () => {
         Modal.success({
           content: '게시글등록완료',
-          onOk() {navigate(`/post/${post.id}`)},
+          onOk() {navigate(`/booksearch`)},
         });
       };
 
   return (
     <div>
         <Form onFinish={submitText}>
-        <Input value={title} onChange={onChangeTitle}  placeholder='제목'></Input>
-        {/* <Input disabled placeholder='책이름' value={searchedBook.title} ></Input> */}
-        <BookImageSelect searchedBook={searchedBook} showModal={showModal}></BookImageSelect>
-        {/* <Button onClick={showModal}>책 검색하기</Button> */}
-        <BookSearchFormModal setModal={setModal} modal={modal} setSearchedBook={setSearchedBook}></BookSearchFormModal>
-        <Rate onChange={onChangeRate} value={rate} ></Rate>
-        <Input.TextArea value={text} placeholder='책내용' onChange={onChangeText}></Input.TextArea>
+            {/* <label  >제목</label> */}
+            <BookImageSelect searchedBook={searchedBook} showModal={showModal}></BookImageSelect>
 
-        <Button type="primary" htmlType='submit'>입력</Button>
-       
+        <Input style={{  width:400}}   value={title} onChange={onChangeTitle}  placeholder='제목'></Input>
+        <Input.TextArea style={{marginTop:20, width:400,height:150}} value={text} placeholder='책내용' onChange={onChangeText}></Input.TextArea>
+       <div style={{display:'flex',flexDirection:'column'}}>
+       <label style={{fontSize:15,marginTop:10,marginRight:370}}>평점</label>
+        <Rate onChange={onChangeRate} style={{marginTop:5,marginRight:270}} value={rate} ></Rate>
+       </div>
+
+     
+
+     <div style={{display:'flex', marginTop:30,marginLeft:100}}>
+
+
+
+     
+   
+
+
+
+
+     </div>
+    
+     <Button style={{borderRadius:100}} size='large' type="primary" htmlType='submit'>등록하기</Button>
+
+      
+     
         </Form>
+        <BookSearchFormModal setModal={setModal} modal={modal} setSearchedBook={setSearchedBook}></BookSearchFormModal>
     </div>
   )
 }

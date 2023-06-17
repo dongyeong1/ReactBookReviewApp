@@ -32,9 +32,7 @@ root.render(
   //provier 컴포넌트로 store 에 접근
       <Provider store={store}> 
       
-          <React.StrictMode>
               <App />
-          </React.StrictMode>
       </Provider>,
   );
 reportWebVitals();

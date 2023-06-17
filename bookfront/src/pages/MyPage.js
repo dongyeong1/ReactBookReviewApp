@@ -1,5 +1,4 @@
-import { Avatar, Card, Rate ,Button, Form, Input} from 'antd';
-import Modal from 'react-modal';
+import { Avatar, Card, Rate ,Button, Form, Input,Modal} from 'antd';
 
 import React,{useEffect,useState,useCallback} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,132 +6,143 @@ import { useNavigate } from "react-router-dom";
 import PostCard from '../components/PostCard'
 import PostEditModal from '../components/PostEditModal';
 import { detailDate } from '../function';
-import { LOAD_MY_INFO_REQUEST, POST_DELETE_REQUEST, POST_EDIT_REQUEST } from '../reducer';
+import { LOAD_MY_INFO_REQUEST, NAVER_LOGIN_REQUEST, POST_DELETE_REQUEST, POST_EDIT_REQUEST } from '../reducer';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import styled from 'styled-components';
+
+const CardWrapper=styled.div`
+.ant-card-meta-title{
+    margin-right:200px
+}   
+`
 
 const MyPage = () => {
+    const { confirm } = Modal;
+
     const navigate = useNavigate();
     const dispatch=useDispatch()
     const [editModal,setEditModal]=useState(false)
-    const [title,setTitle]=useState('')
-    const [content,setContent]=useState('')
-    const [rate,setRate]=useState('')
 
+
+
+    const [modalPost,setModalPost]=useState({})
 
     const {user}=useSelector((state)=>state)
 
+    const id =useSelector((state)=>state.user?.id)
+    useEffect(()=>{
+        if(localStorage.getItem('login-access-token')){
+          dispatch({
+            type:NAVER_LOGIN_REQUEST
+          })
+        }else{
+          dispatch({
+                  type:LOAD_MY_INFO_REQUEST
+              })
+        }
+        
+      },[])
 
     useEffect(()=>{
-        dispatch({
-            type:LOAD_MY_INFO_REQUEST
-        })
-    },[])
-
-    useEffect(()=>{
-if(!user){
+if(!(user&&user.id)){
     navigate('/booksearch')
 }
-    },[user])
+    },[user&&user.id])
 
-const showEditModal=()=>{
-    setEditModal(true)
 
-}
 
-    // const showEditModal=useCallback((data)=>()=>{
-    //     setEditModal(true)
-    //     console.log('asdasdasdasdas')
-    //     console.log('qqqqq',data)
 
-    // },[])
-
-    const deletePost=useCallback((postId)=>()=>{
+    const deletePost=useCallback((postId)=>{
         dispatch({
             type:POST_DELETE_REQUEST,
             data:postId
         })
     })
 
-    const pppossstt=[
-        {
-            id:1,title:'제목1',content:'내용1',rate:3,bookname:'dongbook',
-            src:"https://shopping-phinf.pstatic.net/main_4042172/40421729624.20230607071123.jpg",
-            updatedAt:"2023-06-08T06:43:01.000Z"
-        },
-        {
-            id:2,title:'제목2',content:'내용3',rate:3,bookname:'dongbook',
-            src:"https://shopping-phinf.pstatic.net/main_4042172/40421729624.20230607071123.jpg",
-            updatedAt:"2023-06-08T06:43:01.000Z"
-        },
-        {
-            id:3,title:'제목3',content:'내용3',rate:3,bookname:'dongbook',
-            src:"https://shopping-phinf.pstatic.net/main_4042172/40421729624.20230607071123.jpg",
-            updatedAt:"2023-06-08T06:43:01.000Z"
-        }
-    ]
+    const showEditModal=(data)=>{
+        const mPost=user.Posts.find((v)=>v.id===data)
+        console.log(mPost)
+        setModalPost(mPost)
+        setEditModal(true)
+    
+    }
+
+
+
+    const showConfirm =useCallback((data)=>()=>{
+        confirm({
+            title: '삭제하시겠습니까?',
+            icon: <ExclamationCircleOutlined />,
+            
+        
+            onOk() {
+              console.log('OK');
+              // data[0].title=title
+              // data[0].text=text
+              deletePost(data)
+              setEditModal(false)
+              
+            },
+        
+            onCancel() {
+              console.log('Cancel');
+            },
+          });
+    }) 
   
-    const handleCancel=useCallback(()=>{
-        setEditModal(false)
-      },[])
-
-
-
-      const EditPostSubmit=useCallback((postId)=>{
-        dispatch({
-            type:POST_EDIT_REQUEST,
-            data:{
-                postId,
-                title,
-                content,
-                rate
-                }
-                    })
-    },[title,content,rate])
-
-
-    const onChangeTitle=useCallback((e)=>{
-        setTitle(e.target.value)
-    },[title])
-
-    const onChangeContent=useCallback((e)=>{
-        setContent(e.target.value)
-    },[content])
-
-    const onChangeRate=useCallback((e)=>{
-        setRate(e)
-    },[rate])
-
-
 
   return (
-    <div>{user&&user.Posts.map((post)=>(
+    < >
+        
         <div>
-        <Card>
-            <div>
-                <img src={post.src}></img>
-                <div>{post.bookname}</div>
-            </div>
-              <Card.Meta
-            title={post.title}
-            description={post.content}        
-        />
-        <Rate disabled defaultValue={post.rate}></Rate>
-        <div>{detailDate(new Date(post.createdAt))}</div>
-        <Button type='primary' onClick={()=>showEditModal(post.title)}> 수정하기</Button>
-        <Button type='danger' onClick={deletePost(post.id)}> 삭제하기</Button>
-        </Card>
-        <PostEditModal key={post.id} post={post} postTitle={post.title} editModal={editModal} setEditModal={setEditModal} ></PostEditModal>
-            {/* <Modal isOpen={editModal} onRequestClose={handleCancel}>
-                <Form onFinish={()=>EditPostSubmit(post.id)}>
-                    제목<Input placeholder={post.title} value={title} onChange={onChangeTitle}></Input>
-                    내용<Input placeholder={post.content} value={content}  onChange={onChangeContent}></Input>
-                    비율<Rate placeholder={post.rate} value={rate}  onChange={onChangeRate}></Rate>
-                    <Button type='primary' htmlType='submit'>수정하기</Button>
-                </Form>
-            </Modal> */}
+        <Card
+        style={{  width:500,height:160,marginBottom:20,marginTop:20,borderRadius:20,margin:'20px auto'}}
+      actions={[
+        <div key="twit">독후감갯수<br />{user.Posts.length}</div>,
+        <div key="following">팔로잉<br />{user.Followings.length}</div>,
+        <div key="follower">팔로워<br />{user.Followers.length}</div>,
+      ]}
+    >
+      <Card.Meta
         
-        
+        title={user.nickname+'님 환영합니다!'}
+      />
+      </Card>
         </div>
-    ))}</div>
+        
+        
+        
+        
+        {user&&user.Posts.map((post)=>(
+        <CardWrapper >
+        <Card
+            style={{  width:500,height:160,marginBottom:20,marginTop:20,borderRadius:20,margin:'20px auto'}}
+        key={post.bookname}>
+           <Card.Meta
+        style={{marginBottom:30}}
+          avatar={<img src={post.src} style={{width:70}}></img>}
+          title={post.title}
+        //   description={post.text}
+        description={post.content}
+        
+        />
+        <Rate style={{position:'relative',bottom:110,left:160}} disabled value={post.rate}></Rate>
+        
+       <div style={{position:'relative', bottom:90}}>
+       <div>{detailDate(new Date(post.createdAt))}</div>
+        <Button type='primary' onClick={()=>showEditModal(post.id)}> 수정하기</Button>
+        <Button style={{marginLeft:30}} type='danger' onClick={showConfirm(post.id)}> 삭제하기</Button>
+       </div>
+        </Card>
+        
+         
+        
+        
+        </CardWrapper>
+    ))}
+    
+    <PostEditModal post={modalPost}  editModal={editModal} setEditModal={setEditModal} ></PostEditModal>
+    </>
   )
 }
 

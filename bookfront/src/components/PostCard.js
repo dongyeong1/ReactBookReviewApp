@@ -4,7 +4,7 @@ import { RetweetOutlined, HeartTwoTone, HeartOutlined, MessageOutlined, Ellipsis
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link ,useNavigate} from 'react-router-dom';
-import { LIKE_POST_REQUEST, POST_LOAD_REQUEST, UNLIKE_POST_REQUEST } from '../reducer';
+import { LIKE_POST_REQUEST, LOAD_MY_INFO_REQUEST, NAVER_LOGIN_REQUEST, POST_LOAD_REQUEST, UNLIKE_POST_REQUEST } from '../reducer';
 import CommentForm from './CommentForm';
 import { detailDate } from '../function';
 import FollowButton from './FollowButton';
@@ -12,34 +12,36 @@ import FollowButton from './FollowButton';
 
 
 const CardWrapper = styled.div`
-  margin-bottom: 20px;
+
+    margin-bottom:20px;
+  width:500px;
+  margin:auto;
+  
 `;
 
 
 const PostCard = ({ bookpost }) => {
 
-    const navigate = useNavigate();
 
   const dispatch=useDispatch()
-  const {user}=useSelector((state)=>state)
+  const {user,book}=useSelector((state)=>state)
   const id = useSelector((state) => state.user && state.user.id);
   const [like,setLike]=useState(false)
   const [showComment,setShowComment]=useState(false)
 
-//   const [liked, setLiked] = useState(false);
 
-
-    // const showFollowButton=
-
-
-const postLoad=(data)=>{
-    dispatch({
-        type:POST_LOAD_REQUEST,
-        data:{
-            postId:data
-        }
-    })
-}
+  useEffect(()=>{
+    if(localStorage.getItem('login-access-token')){
+      dispatch({
+        type:NAVER_LOGIN_REQUEST
+      })
+    }else{
+      dispatch({
+              type:LOAD_MY_INFO_REQUEST
+          })
+    }
+    
+  },[])
 
 
 
@@ -47,23 +49,21 @@ const onLike=useCallback((postId)=>{
 
     dispatch({
         type:LIKE_POST_REQUEST,
-        data:postId
+        data:{postId,userId:user.id}
     })
     setLike((prev)=>!prev)
 
-},[like])
+},[like,user])
 
 
-
-const onUnLike=useCallback((postId)=>{
-
+const onUnLike=(postId)=>{
     dispatch({
         type:UNLIKE_POST_REQUEST,
-        data:postId
+        data:{postId,userId:user.id}
     })
     setLike((prev)=>!prev)
+}
 
-},[like])
 
 const onToggleComment=useCallback(()=>{
 setShowComment((prev)=>!prev)
@@ -75,35 +75,65 @@ setShowComment((prev)=>!prev)
     <CardWrapper key={bookpost.id}>
 
       <Card
-        //postImage가 하나라도 있을때 작동
-       
+       style={{  width:500,height:160,marginBottom:20,marginTop:20,borderRadius:20}}
+      
       >
-          {user&&<FollowButton bookpost={bookpost}/>}
+          
         <Card.Meta
-          avatar={<Avatar>{bookpost.User.nickname[0]}</Avatar>}
-          title={bookpost.User.nickname}
+        style={{marginBottom:30}}
+        //   avatar={<img src={book.image} style={{width:50}}></img>}
+          title={bookpost.title}
         //   description={post.text}
         description={bookpost.content}
         
         />
+        {/* <div style={{display:'flex'}}>
         <div>좋아요{bookpost.Likers.length}개</div>
-        {
-            liked?<HeartTwoTone onClick={()=>onUnLike(bookpost.id)}></HeartTwoTone>:<HeartOutlined onClick={()=>onLike(bookpost.id)}></HeartOutlined>
+        <div style={{marginLeft:30}}>댓글{bookpost.Comments.length}개</div>
+
+        </div> */}
+
+        <div style={{display:'flex' ,width:300,marginTop:15}}>
+
+        {liked?<Button type='primary' onClick={()=>onUnLike(bookpost.id)} style={{borderRadius:50,marginLeft:20}} >좋아요{bookpost.Likers.length}개<HeartTwoTone size='large' ></HeartTwoTone></Button>:
+        <Button type='primary' onClick={()=>onLike(bookpost.id)} style={{borderRadius:50,marginLeft:20}} >좋아요{bookpost.Likers.length}개<HeartOutlined  size='large' ></HeartOutlined></Button>
         }
-               {/* <Button onClick={postLoad(bookpost.id)} type='primary'>상세보기</Button> */}
+       
+    <div style={{width:100}}>
+    <Button style={{borderRadius:50,marginRight:250,marginLeft:20}} type='primary' onClick={onToggleComment}>댓글{bookpost.Comments.length}개<MessageOutlined /></Button></div>
+    {user&&<FollowButton bookpost={bookpost}/>}
+
+    
+        </div>
+
+
+        
+       
+
 
       </Card>
-      <Button onClick={onToggleComment}>댓글보기</Button>
 
-{showComment?<div><CommentForm></CommentForm>{bookpost.Comments.map((v)=>(
+{showComment?<div><CommentForm bookpostId={bookpost.id}></CommentForm>
     <div>
-    <div>{v.content}</div>
+<List
+            //  header={`${v.Comments.length} 댓글`}
+             dataSource={bookpost.Comments}
+             renderItem={(item)=>(
+                <li>
+                    <Comment 
+                        author={item.User.nickname}
+                        content={item.content}
+                        avatar={<Avatar>{item.User.nickname[0]}</Avatar>}/>
+                </li>
+             )}
+          ></List>
+
+    {/* <div>{v.content}</div>
     <div>{v.User.nickname}</div>
-    <div>{detailDate(new Date(v.createdAt))}</div>
+    <div>{detailDate(new Date(v.createdAt))}</div> */}
     </div>
-))}</div>:null}
+</div>:null}
     
-      <hr></hr>
     </CardWrapper>
   );
 };

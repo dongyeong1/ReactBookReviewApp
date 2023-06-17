@@ -29,14 +29,16 @@ const FollowButton = ({bookpost}) => {
         return null
     }
   return (
-
-      <div>  {isFollowing?  <Button loading={unfollowLoading}
+    < >
+        {isFollowing?  <Button type='primary' style={{marginLeft:40,borderRadius:50}}  loading={unfollowLoading}
       onClick={follow}
-  >언팔로우</Button>:<Button
+  >{bookpost.User.nickname}님 unFollow</Button>:<Button
+  type='primary'
+  style={{marginLeft:40,borderRadius:50,position:'relative',bottom:90,left:60}}
   loading={followLoading}
   onClick={follow}
->팔로우</Button>}
-  </div>
+>{bookpost.User.nickname}님 Follow</Button>}
+</>
   
   
   )

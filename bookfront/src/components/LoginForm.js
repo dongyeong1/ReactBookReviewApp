@@ -13,7 +13,7 @@ const LoginForm = () => {
 
     const dispatch=useDispatch();
 
-    const {loginLoading}=useSelector((state)=>state)
+    const {loginError,loginSuccess}=useSelector((state)=>state)
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('')
 
@@ -33,7 +33,17 @@ const LoginForm = () => {
         }
 
     })
+  
  },[email,password])
+
+ useEffect(()=>{
+    if(loginError){
+        alert(loginError)
+    }
+ },[loginError])
+
+
+
 
   return (
     <Form onFinish={onSubmit}>
@@ -47,7 +57,7 @@ const LoginForm = () => {
         <br/>
         <Input type="password" name='user-password' value={password} onChange={onChangePassword} ></Input>
     </ButtonWrapper>
-    <Button type='primary' htmlType='submit' loading={loginLoading}>로그인</Button>
+    <Button type='primary' htmlType='submit' >로그인</Button>
         <Link to='/signup'>
         <Button type='primary'>회원가입</Button>
         </Link>
