@@ -29,6 +29,7 @@ const Book = () => {
     },[])
   
   useEffect(()=>{
+    console.log('1asdasdasdasd')
     dispatch({
       type:BOOK_LOAD_REQUEST,
       data:id
@@ -53,10 +54,10 @@ const Book = () => {
       style={{width:500,height:110,marginBottom:20,borderRadius:20,margin:'20px auto',backgroundColor:'lightgray'}}>
       {/* {book&&<img src={book.image} style={{width:200}}></img>} */}
       <Card.Meta
-          avatar={<img src={book.image} style={{width:50}}></img>}
+          avatar={<img src={book&&book.image} style={{width:50}}></img>}
           // title={book.title}
         //   description={post.text}
-        description={book.title}
+        description={book&&book.title}
         
         />
       </Card>

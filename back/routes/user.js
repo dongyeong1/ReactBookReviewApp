@@ -258,7 +258,7 @@ router.patch('/:userId/follow',async(req,res,next)=>{
             res.status(403).send('없는사람입니다')
         }
 
-        await user.addFollowers(req.params.userId)
+        await user.addFollowers(req.body.userId)
 
      
         res.status(200).json({UserId:parseInt(req.params.userId,10)})
@@ -270,14 +270,14 @@ router.patch('/:userId/follow',async(req,res,next)=>{
 
 
 
-router.delete('/:userId/follow',async(req,res,next)=>{
+router.patch('/:userId/unfollow',async(req,res,next)=>{
     try{
         const user=await User.findOne({where:{id:req.params.userId}})
         if(!user){
             res.status(403).send('없는사람입니다')
         }
 
-        await user.removeFollowers(req.params.userId)
+        await user.removeFollowers(req.body.userId)
         //user는 내가 팔로우하고있는사람
         //그 user의 팔로워는 나니까 removeFollowers한다
 

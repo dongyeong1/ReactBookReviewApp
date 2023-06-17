@@ -16,12 +16,16 @@ const FollowButton = ({bookpost}) => {
         if(isFollowing){
             dispatch({
                 type:UNFOLLOW_REQUEST,
-                data:bookpost.User.id
+                data:{followUserId:bookpost.User.id,
+                    userId:user.id
+                }
             })
         }else{
             dispatch({
                 type:FOLLOW_REQUEST,
-                data:bookpost.User.id
+                data:{followUserId:bookpost.User.id,
+                    userId:user.id
+                }
             })
         }
     },[isFollowing])
@@ -30,11 +34,11 @@ const FollowButton = ({bookpost}) => {
     }
   return (
     < >
-        {isFollowing?  <Button type='primary' style={{marginLeft:40,borderRadius:50}}  loading={unfollowLoading}
+        {isFollowing?  <Button type='primary' style={{marginLeft:40,borderRadius:50,position:'relative',bottom:90,left:40}}  loading={unfollowLoading}
       onClick={follow}
   >{bookpost.User.nickname}님 unFollow</Button>:<Button
   type='primary'
-  style={{marginLeft:40,borderRadius:50,position:'relative',bottom:90,left:60}}
+  style={{marginLeft:40,borderRadius:50,position:'relative',bottom:90,left:40}}
   loading={followLoading}
   onClick={follow}
 >{bookpost.User.nickname}님 Follow</Button>}

@@ -363,13 +363,14 @@ function likePostAPI(data) {
 
 
   function followAPI(data) {
-    return axios.patch(`http://localhost:3065/user/${data}/follow`);
+    return axios.patch(`http://localhost:3065/user/${data.followUserId}/follow`,{
+        userId:data.userId
+    });
   }
   
   function* follow(action) {
     try {
       const result = yield call(followAPI,action.data);
-      yield delay(1000);
       yield put({
         type: FOLLOW_SUCCESS,
         data: result.data,
@@ -384,14 +385,15 @@ function likePostAPI(data) {
   }
   
   function unfollowAPI(data) {
-    return axios.delete(`http://localhost:3065/user/${data}/follow`);
+    return axios.patch(`http://localhost:3065/user/${data.followUserId}/unfollow`,{
+        userId:data.userId
+    });
   }
   
   function* unfollow(action) {
     try {
       const result = yield call(unfollowAPI,action.data);
-      yield delay(1000);
-      yield put({
+            yield put({
         type: UNFOLLOW_SUCCESS,
         data: result.data,
       });

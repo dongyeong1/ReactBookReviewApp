@@ -98,14 +98,14 @@ if(!(user&&user.id)){
         <Card
         style={{  width:500,height:160,marginBottom:20,marginTop:20,borderRadius:20,margin:'20px auto'}}
       actions={[
-        <div key="twit">독후감갯수<br />{user.Posts.length}</div>,
-        <div key="following">팔로잉<br />{user.Followings.length}</div>,
-        <div key="follower">팔로워<br />{user.Followers.length}</div>,
+        <div key="twit">독후감갯수<br />{user&&user.Posts.length}</div>,
+        <div key="following">팔로잉<br />{user&&user.Followings.length}</div>,
+        <div key="follower">팔로워<br />{user&&user.Followers.length}</div>,
       ]}
     >
       <Card.Meta
         
-        title={user.nickname+'님 환영합니다!'}
+        title={user&&user.nickname+'님 환영합니다!'}
       />
       </Card>
         </div>
