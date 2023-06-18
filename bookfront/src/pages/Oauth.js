@@ -20,6 +20,7 @@ const Oauth = () => {
         let code=new URL(window.location.href).searchParams.get("code");
         let callback_state=new URL(window.location.href).searchParams.get("callback_state");
 
+console.log('qweqweqwe')
         // let code = req.query.code;
         // let callback_state = req.query.state;
       
@@ -57,8 +58,8 @@ const Oauth = () => {
             })
             .then((res)=>{
                 console.log('userinformation',res.data)
-                localStorage.setItem('login-access-token',res.data.access_token)
-                localStorage.setItem('login-token-type',res.data.token_type)
+                localStorage.setItem('naverlogin-access-token',res.data.access_token)
+                localStorage.setItem('naverlogin-token-type',res.data.token_type)
 
                 navigate('/booksearch')
 

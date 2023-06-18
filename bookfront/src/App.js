@@ -19,6 +19,7 @@ import Login from './pages/Login';
 import Oauth from './pages/Oauth';
 import { useEffect } from 'react';
 import { LOAD_MY_INFO_REQUEST, NAVER_LOGIN_REQUEST } from './reducer';
+import KakaoOauth from './pages/KakaoOauth';
 function App() {
   const dispatch=useDispatch()
   const {user}=useSelector((state)=>state)
@@ -53,6 +54,8 @@ function App() {
           <Route exact path='/'  element={<Index></Index>}>
           </Route>
           <Route exact path='/Oauth'  element={<Oauth></Oauth>}>
+          </Route>
+          <Route exact path='/KakaoOauth'  element={<KakaoOauth></KakaoOauth>}>
           </Route>
           <Route exact path='/review'  element={<Review></Review>}>
           </Route>

@@ -109,16 +109,23 @@ const bookSearch=useCallback(()=>{
 },[bookName,books])
 
 useEffect(()=>{
-  if(localStorage.getItem('login-access-token')){
+  if(localStorage.getItem('naverlogin-access-token')){
     dispatch({
       type:NAVER_LOGIN_REQUEST
     })
-  }else{
+  }else if(localStorage.getItem('kakaologin-access-token')){
+    dispatch({
+      type:NAVER_LOGIN_REQUEST
+    })
+  } else{
     dispatch({
             type:LOAD_MY_INFO_REQUEST
         })
   }
   
+  
+  
+ 
 },[])
 
 

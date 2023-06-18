@@ -55,9 +55,15 @@ const navigate=useNavigate()
 const dispatch=useDispatch();
 
 const logOut=useCallback(()=>{
-    localStorage.removeItem("login-access-token");
-    localStorage.removeItem("login-token-type");
-
+    if(localStorage.getItem('naverlogin-access-token')){
+        localStorage.removeItem("naverlogin-access-token");
+        localStorage.removeItem("naverlogin-token-type");
+    
+    }else if(localStorage.getItem('kakaologin-access-token')){
+        localStorage.removeItem("kakaologin-access-token");
+        localStorage.removeItem("kakaologin-token-type");
+    }
+    
 
     navigate('/booksearch')
 },[])
@@ -72,7 +78,7 @@ const logOut=useCallback(()=>{
         {/* <Link to='/signup'><span>회원가입</span></Link> */}
         <Link to='/review'><span>독후감쓰기</span></Link>
         <Link to="/booksearch"><span>책검색</span></Link>
-        {localStorage.getItem('login-access-token')?
+        {localStorage.getItem('naverlogin-access-token')||localStorage.getItem('kakaologin-access-token')?
         <span onClick={logOut} style={{width:100}}>로그아웃</span>:
         <Link to='/login'><span style={{width:100}}>로그인</span></Link>
 

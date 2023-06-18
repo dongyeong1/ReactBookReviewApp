@@ -6,6 +6,7 @@ import { useCallback ,useEffect,useState,useRef} from 'react';
 // import Link from 'next/link';
 import { Link } from 'react-router-dom';
 import NaverLogin from '../components/NaverLogin';
+import KakaoLogin from '../components/KakaoLogin';
 
 
 
@@ -70,7 +71,10 @@ const Login = () => {
         <NaverLogin></NaverLogin>
         </InputWrapper>
         <div style={{width:180 ,margin:'auto',marginTop:30}}>아직 회원이 아니라면?<Link to='/signup'><a>회원가입</a></Link></div>
+        <KakaoLogin></KakaoLogin>
+
     </div>
+
     
   )
 }

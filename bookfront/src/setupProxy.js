@@ -13,10 +13,10 @@ module.exports = (app) => {
       changeOrigin: true,
     }),
   );
-//   app.use(
-//     createProxyMiddleware('/user',{
-//       target: 'http://localhost:3065',
-//       changeOrigin: true,
-//     }),
-//   );
+  app.use(
+    createProxyMiddleware('/oauth',{
+      target: 'https://kauth.kakao.com',
+      changeOrigin: true,
+    }),
+  );
 };

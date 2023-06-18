@@ -9,6 +9,96 @@ const axios =require('axios')
 const router = express.Router();
 
 
+router.post('/kakaologin',async(req,res)=>{
+    const kakaoinformation=await axios({
+        method:'get',
+        url:"https://kapi.kakao.com/v2/user/me",
+        headers:{
+            Authorization:`Bearer ${req.body.access_token}`,
+            "Content-Type" : "application/x-www-form-urlencoded",
+        }
+    })
+
+    //  console.log('asdxzxzdsa',kakaoinformation.data)
+
+    const exUser= await User.findOne({
+        where:{email:kakaoinformation.data.id},
+        attributes: {
+            exclude: ['password']
+          },
+          include: [{
+            model: Post,
+            include:[{
+                model:User,
+                as:'Likers',
+                attributes:['id']
+            }]
+          }, {
+            model: User,
+            as: 'Followings',
+            attributes: ['id'],
+          }, {
+            model: User,
+            as: 'Followers',
+            attributes: ['id'],
+          },{
+              model:Post,
+              as:'Liked',
+              attributes:['id']
+          }]
+        
+    })
+
+    if(!exUser){
+        const user=await User.create({
+        
+            nickname:kakaoinformation.data.properties.nickname,
+            password:'kakaoUser',
+            email:kakaoinformation.data.id,
+        })
+        const exUser= await User.findOne({
+            where:{email:kakaoinformation.data.id},
+            attributes: {
+                exclude: ['password']
+              },
+              include: [{
+                model: Post,
+                include:[{
+                    model:User,
+                    as:'Likers',
+                    attributes:['id']
+                }]
+              }, {
+                model: User,
+                as: 'Followings',
+                attributes: ['id'],
+              }, {
+                model: User,
+                as: 'Followers',
+                attributes: ['id'],
+              },{
+                  model:Post,
+                  as:'Liked',
+                  attributes:['id']
+              }]
+        })
+        res.status(200).json({exUser,token_type:req.body.token_type,access_token:req.body.access_token})
+        //  res.redirect('http://localhost:3000/booksearch')
+
+    }else{
+       
+        res.status(200).json({exUser,token_type:req.body.token_type,access_token:req.body.access_token})
+        //  res.redirect('http://localhost:3000/booksearch')
+
+    }
+
+
+
+
+
+})
+
+
 router.post('/naverlogin',  async(req, res)=> {
     // res.send('asddd')
     // console.log('resultt')

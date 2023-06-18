@@ -477,23 +477,45 @@ function likePostAPI(data) {
 
   function NaverLoginAPI(data) {
     let client_id = process.env.REACT_APP_NAVER_LOGIN_CLIENT_ID;
-    const access_token=localStorage.getItem('login-access-token')
-    const token_type=localStorage.getItem('login-token-type')
-
-    let client_secret = process.env.REACT_APP_NAVER_LOGIN_CLIENT_SECRET;
-    return   axios({
-        method:'post',
-        url:'http://localhost:3065/user/naverlogin',
-        data:{access_token,token_type},
-        headers:{
-            Accept: "application/json",
-            'X-Naver-Client-Id': client_id,
-            'X-Naver-Client-Secret': client_secret
-        }
-        
   
 
-    })
+    let client_secret = process.env.REACT_APP_NAVER_LOGIN_CLIENT_SECRET;
+
+    if(localStorage.getItem('naverlogin-access-token')){
+        const access_token=localStorage.getItem('naverlogin-access-token')
+        const token_type=localStorage.getItem('naverlogin-token-type')
+        return   axios({
+            method:'post',
+            url:'http://localhost:3065/user/naverlogin',
+            data:{access_token,token_type},
+            headers:{
+                Accept: "application/json",
+                'X-Naver-Client-Id': client_id,
+                'X-Naver-Client-Secret': client_secret
+            }
+            
+      
+    
+        })
+    }else if(localStorage.getItem('kakaologin-access-token')){
+        const access_token=localStorage.getItem('kakaologin-access-token')
+        const token_type=localStorage.getItem('kakaologin-token-type')
+
+        return axios({
+            method:'post',
+            url:'http://localhost:3065/user/kakaologin',
+            data:{access_token,token_type},
+            headers:{
+                "Content-Type" : "application/x-www-form-urlencoded",
+            }
+            
+
+        })
+
+    }
+
+
+   
     
     // axios.post(naver_api_url,{
     //     headers:{
@@ -510,7 +532,7 @@ function likePostAPI(data) {
     try {
 
       const result = yield call(NaverLoginAPI,action.data);
-      console.log('sagadata',result.data)
+      console.log('sagadata',result)
       // yield delay(1000);
       yield put({
         type: NAVER_LOGIN_SUCCESS,
