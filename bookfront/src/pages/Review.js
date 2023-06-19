@@ -15,18 +15,26 @@ margin:50px auto;
 
 const Review = () => {
     const dispatch=useDispatch()
-    useEffect(()=>{
-      if(localStorage.getItem('login-access-token')){
-        dispatch({
-          type:NAVER_LOGIN_REQUEST
+   
+useEffect(()=>{
+  if(localStorage.getItem('naverlogin-access-token')){
+    dispatch({
+      type:NAVER_LOGIN_REQUEST
+    })
+  }else if(localStorage.getItem('kakaologin-access-token')){
+    dispatch({
+      type:NAVER_LOGIN_REQUEST
+    })
+  } else{
+    dispatch({
+            type:LOAD_MY_INFO_REQUEST
         })
-      }else{
-        dispatch({
-                type:LOAD_MY_INFO_REQUEST
-            })
-      }
-      
-    },[])
+  }
+  
+  
+  
+ 
+},[])
 
   return (
     <ReviewWrapper>

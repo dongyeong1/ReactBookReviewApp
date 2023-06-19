@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { Modal ,Input,Space} from 'antd'
+import { Modal ,Input,Space,Empty} from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { BOOKS_REMOVE_REQUEST, SEARCH_BOOK_REMOVE, SEARCH_BOOK_REQUEST } from '../reducer'
 import styled from 'styled-components'
@@ -13,27 +13,29 @@ const Pagination=styled.div`
 margin-top:50px;
 .paginationBttns{
   width:90%;
-  height:30px;
+  height:10px;
   list-style:none;
   display:flex;
   justify-content:center;
 }
 
 .paginationBttns a{
+  height:1px;
   padding:7px;
   margin:10px;
   border-radius:5px;
-  border: 1px solid blue;
-  color: blue;
+  border: 1px solid #1890ff;
+  color: #1890ff;
   cursor: pointer
 }
+
 .paginationBttns a:hover{
   color:white;
-  background-color:blue;
+  background-color:#1890ff;
 }
 .paginationActive a{
   color:white;
-  background-color:blue;
+  background-color:#1890ff;
 }
 
 `
@@ -60,19 +62,23 @@ display: flex;
 flex-direction: row;
 justify-content: space-between;
 align-items: center ;
-
+margin-top:120;
 margin-right:auto;
 
 `
 
-const SearchWrapper=styled(Input.Search)`
-margin-top:10px;
-width:450px;
+const SearchWrapper=styled(Input)`
+margin-left:130px;
+border-radius:20px;
+height:40px;
+width:200px;
+font-size:15px;
 `
 const BookSearchFormModal = ({setModal,modal,setSearchedBook}) => {
  
 //  const [bookId,setBookId]=useState('')
 const [bookName,setBookName]=useState('')
+const [showComponent,setShowComponent]=useState(false)
 
 
 const onChangeBook=useCallback((e)=>{
@@ -91,7 +97,7 @@ const bookSearch=useCallback(()=>{
         type:SEARCH_BOOK_REQUEST,
         data:bookName
     })
-   
+    setShowComponent(true)
    console.log('asd')
 
 },[bookName,books])
@@ -134,12 +140,13 @@ const changePage=({selected})=>{
 
 
 
+
 //modal
 
 
   return (
     <div>
-        <ModalWrapper open={modal} onOk={false} onCancel={handleCancel}>
+        <ModalWrapper open={modal} onOk={handleCancel} onCancel={handleCancel} >
          
         <Space direction="vertical">
        
@@ -147,25 +154,23 @@ const changePage=({selected})=>{
        value={bookName}
        onChange={onChangeBook}
         prefix={<SearchOutlined />}
-        placeholder='책을검색하세요'
-     enterButton="Search"
-     size="large"
-     onSearch={bookSearch}
-   />      
+        placeholder='책을 입력해주세요'
+     onPressEnter={bookSearch}
+     />      
 
        </Space>
         <ResultWrapper>
 
-        {books&&books.slice(pagesVisited,pagesVisited+PerPage).map((v)=>(
-       <Abc onClick={imageClick(v.title,v.isbn,v.image)}>
-        <img  src={v.image} style={{width:80}}></img>
-        <div>{v.title}</div>
+        {books?books.slice(pagesVisited,pagesVisited+PerPage).map((v)=>(
+       <Abc style={{marginBottom:10}} onClick={imageClick(v.title,v.isbn,v.image)}>
+        <img  src={v.image} style={{width:50}}></img>
+        <div style={{marginLeft:20}}>{v.title}</div>
         </Abc>
-        ))}
+        )):(showComponent?<div style={{marginTop:10}}><Empty description="검색결과없음" /></div>:null)}
                 </ResultWrapper>
 
-                <Pagination>
-        {books&&
+                {books&&   <Pagination>
+        
        <ReactPaginate
        previousLabel={<CaretLeftOutlined />}
        nextLabel={<CaretRightOutlined />}
@@ -174,9 +179,9 @@ const changePage=({selected})=>{
        containerClassName={'paginationBttns'}
       
       //  activeClassName={'paginationActive'}
-></ReactPaginate>}
+></ReactPaginate>
 
-       </Pagination>
+       </Pagination>}
 
       </ModalWrapper>
     

@@ -69,6 +69,35 @@ router.post('/addpost',async(req,res)=>{
     
 })
 
+
+router.post('/bookPostsRate',async(req,res)=>{
+    const posts= await Post.findAll({
+        where:{isbn:req.body.isbn},
+        order:[
+            ['rate','DESC'],
+            [Comment, 'createdAt', 'DESC']
+        ],
+        include:[{
+            model: Comment,
+    include: [{
+      model: User,//댓글작성자
+      attributes: ['id', 'nickname'],
+    }],
+        },{
+            model:User,//게시글작성자
+            attributes: ['id', 'nickname'],
+        },{
+            model:User,
+            as:'Likers',
+            attributes:['id']
+        }
+    ]
+    })
+    res.status(201).json(posts)
+})
+
+
+
 router.post('/bookPosts',async(req,res)=>{
     const posts= await Post.findAll({
         where:{isbn:req.body.isbn},

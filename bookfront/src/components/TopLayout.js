@@ -4,9 +4,11 @@ import App from '../App'
 import {Row,Col, Input,Button} from 'antd'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { ADD_BOOK, SEARCH_BOOK_REQUEST } from '../reducer'
+import { ADD_BOOK, SEARCH_BOOK_REMOVE, SEARCH_BOOK_REQUEST } from '../reducer'
 import { UserOutlined,LogoutOutlined} from '@ant-design/icons';
 import { Link, Router, useNavigate } from 'react-router-dom'
+import ReviewModal from './ReivewModal'
+import { List } from 'antd/lib/form/Form'
 
 
 const AppWrapper=styled.div`
@@ -16,39 +18,25 @@ justify-content: space-between;
 align-items: center ;
 
 background-color:lightgray;
-height:80px;
+height:70px;
 
-span{
+div{
     &:last-child{
         margin-right:50px;
+
     }
     &:first-child{
         margin-left:100px;
     }
+
 }
 
 `
 
-const IconWrapper=styled.div`
-
-margin-right:100px;
-
-&>span{
-   
-}
-`
-
-
-const InputSearch=styled(Input.Search)`
-width:500px;
-height:50px;
-margin-right:100px;
-
-`
 
 const TopLayout = ({children}) => {
 
-
+const [showModal,setShowModal]=useState(false)
 
 const {user}=useSelector((state)=>state)
 const navigate=useNavigate()
@@ -65,31 +53,40 @@ const logOut=useCallback(()=>{
     }
     
 
-    navigate('/booksearch')
+    navigate('/home')
 },[])
 
 
+const modalHandle=useCallback(()=>{
+    setShowModal(true)
+},[])
+
+const bookRemove=useCallback(()=>{
+    dispatch({
+        type:SEARCH_BOOK_REMOVE
+    })
+},[])
 
 
   return (
     <div>
+        <ReviewModal modal={showModal} setModal={setShowModal}></ReviewModal>
         <AppWrapper>
-        <Link to='/'><span>홈</span></Link>
-        {/* <Link to='/signup'><span>회원가입</span></Link> */}
-        <Link to='/review'><span>독후감쓰기</span></Link>
-        <Link to="/booksearch"><span>책검색</span></Link>
+        <Link to='/home'><div style={{fontSize:18}}>홈</div></Link>
+        <Link  to="/booksearch"><div onClick={bookRemove} style={{marginRight:100,fontSize:18}} className='ser'>책검색</div></Link>
+
+         <div style={{marginRight:400 ,fontSize:18}} onClick={modalHandle}>독후감쓰기</div>
+        {user&&<Link to="/mypage"><div  style={{fontSize:18}}>마이페이지</div></Link>}
+
         {localStorage.getItem('naverlogin-access-token')||localStorage.getItem('kakaologin-access-token')?
-        <span onClick={logOut} style={{width:100}}>로그아웃</span>:
-        <Link to='/login'><span style={{width:100}}>로그인</span></Link>
+       <Link to='/home'><div   onClick={logOut} style={{width:100,fontSize:18}}>로그아웃</div></Link> :
+        <Link to='/login'><div  style={{fontSize:18}} style={{width:100}}>로그인</div></Link>
 
         }
 
          
                
-            <IconWrapper>
-            {user&&<Link to="/mypage"><p><UserOutlined style={{fontSize:25}}/></p></Link>}
                 {/* <p><LogoutOutlined /></p> */}
-            </IconWrapper>
  
         </AppWrapper>
       

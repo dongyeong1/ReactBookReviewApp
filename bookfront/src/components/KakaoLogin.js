@@ -17,7 +17,7 @@ const KakaoLogin = () => {
    
 
   return (
-      <a href={kakao_api_url}>카카오로그인</a>
+      <a style={{marginTop:20}} href={kakao_api_url}><img width='250' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRq5y4gLsduJ9rithyOIRC_I25A92MyB-bFXg&usqp=CAU'></img></a>
 //    <div  onClick={login}><img  height='50' src='http://static.nid.naver.com/oauth/small_g_in.PNG'/></div>
     
 

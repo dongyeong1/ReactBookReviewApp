@@ -49,7 +49,7 @@ const KakaoOauth = () => {
                 localStorage.setItem('kakaologin-access-token',res.data.access_token)
                 localStorage.setItem('kakaologin-token-type',res.data.token_type)
 
-                navigate('/booksearch')
+                navigate('/home')
 
             })
            })

@@ -42,7 +42,7 @@ const CommentForm = ({bookpostId}) => {
   return (
     <Form onFinish={onSubmit} >
         <Input.TextArea value={comment} onChange={onChangeComment}></Input.TextArea>
-        <Button type='primary' style={{borderRadius:30,marginTop:10}} htmlType='submit'>댓글작성</Button>
+        <Button type='primary' style={{borderRadius:30,marginTop:5,marginLeft:420}} htmlType='submit'>댓글작성</Button>
     </Form>
   )
 }

@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import UserProfile from './components/UserProfile';
 import LoginForm from './components/LoginForm';
 import MyPage from './pages/MyPage';
-import Index from './pages';
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Oauth from './pages/Oauth';
 import { useEffect } from 'react';
@@ -36,6 +36,9 @@ function App() {
     
   // },[])
 
+
+  
+
   return (
 
     <BrowserRouter>
@@ -51,7 +54,7 @@ function App() {
        
           
        <Routes>
-          <Route exact path='/'  element={<Index></Index>}>
+          <Route exact path='/home'  element={<Home></Home>}>
           </Route>
           <Route exact path='/Oauth'  element={<Oauth></Oauth>}>
           </Route>

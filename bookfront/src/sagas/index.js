@@ -1,5 +1,5 @@
 import {all,fork,call,put, takeLatest, delay} from 'redux-saga/effects'
-import { ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_POST_REQUEST, ADD_POST_SUCCESS, BOOK_LOAD_REQUEST, BOOK_LOAD_SUCCESS, BOOK_POSTS_REQUEST, BOOK_POSTS_SUCCESS, FOLLOW_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS, LIKE_POST_FAIL, LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LOAD_MY_INFO_FAILURE, LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, NAVER_LOGIN_FAIL, NAVER_LOGIN_REQUEST, NAVER_LOGIN_SUCCESS, POST_DELETE_FAIL, POST_DELETE_REQUEST, POST_DELETE_SUCCESS, POST_EDIT_FAIL, POST_EDIT_REQUEST, POST_EDIT_SUCCESS, POST_LOAD_REQUEST, POST_LOAD_SUCCESS, SEARCH_BOOK_FAIL, SEARCH_BOOK_REQUEST, SEARCH_BOOK_SUCCESS, SIGNUP_REQUEST, SIGNUP_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNLIKE_POST_FAIL, UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS } from '../reducer'
+import { ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_POST_REQUEST, ADD_POST_SUCCESS, BOOK_LOAD_REQUEST, BOOK_LOAD_SUCCESS, BOOK_POSTS_REQUEST, BOOK_POSTS_SUCCESS, FOLLOW_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS, LIKE_POST_FAIL, LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LOAD_MY_INFO_FAILURE, LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, NAVER_LOGIN_FAIL, NAVER_LOGIN_REQUEST, NAVER_LOGIN_SUCCESS, POST_DELETE_FAIL, POST_DELETE_REQUEST, POST_DELETE_SUCCESS, POST_EDIT_FAIL, POST_EDIT_REQUEST, POST_EDIT_SUCCESS, POST_LOAD_REQUEST, POST_LOAD_SUCCESS, RATE_BOOK_POSTS_REQUEST, RATE_BOOK_POSTS_SUCCESS, SEARCH_BOOK_FAIL, SEARCH_BOOK_REQUEST, SEARCH_BOOK_SUCCESS, SIGNUP_REQUEST, SIGNUP_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNLIKE_POST_FAIL, UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS } from '../reducer'
 import { useNavigate } from 'react-router-dom'
 
 import axios from 'axios';
@@ -223,6 +223,38 @@ function* addComment(action){
     }
     
 }
+
+
+function rateSortAPI(data){
+ 
+    return axios.post('http://localhost:3065/post/bookPostsRate',{
+        isbn:data
+       
+    })
+   
+}
+
+
+
+function* rateSort(action){
+
+    try{
+        
+        const result =yield call(rateSortAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        yield put({
+            type:RATE_BOOK_POSTS_SUCCESS,
+            data:result.data
+           
+        })
+    
+        
+    }catch(err){
+      
+        console.log(err)
+    }
+    
+}
+
 
 function bookPostsAPI(data){
  
@@ -617,6 +649,9 @@ function* watchFollow() {
     yield takeLatest(NAVER_LOGIN_REQUEST, naverLogin);
   }
 
+  function* watchRateBookPostsLoad() {
+    yield takeLatest(RATE_BOOK_POSTS_REQUEST, rateSort);
+  }
 export default function* rootSaga(){
  
     
@@ -639,7 +674,8 @@ export default function* rootSaga(){
         fork(watchEditPost),
         fork(watchDeletePost),
         fork(watchBookLoad),
-        fork(watchNaverLogin)
+        fork(watchNaverLogin),
+        fork(watchRateBookPostsLoad),
     ])
 
 }

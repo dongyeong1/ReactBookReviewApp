@@ -21,7 +21,7 @@ const dispatch=useDispatch()
     })
 
   return (
-      <a href={naver_api_url}><img  height='50' src='http://static.nid.naver.com/oauth/small_g_in.PNG'/></a>
+      <a href={naver_api_url}><img height='50' width='250' src='http://static.nid.naver.com/oauth/small_g_in.PNG'/></a>
 //    <div  onClick={login}><img  height='50' src='http://static.nid.naver.com/oauth/small_g_in.PNG'/></div>
     
 

@@ -1,4 +1,4 @@
-import { Button, Form, Input ,Space,Spin,Modal, Empty,Card, List} from 'antd'
+import { Button, Form, Input ,Space,Spin,Modal, Empty,Card, List, Select} from 'antd'
 import React, { useState ,useCallback,useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BOOK_POSTS_REQUEST, LOAD_MY_INFO_REQUEST, NAVER_LOGIN_REQUEST, SEARCH_BOOK_REQUEST } from '../reducer'
@@ -6,6 +6,7 @@ import { Link,useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { UserOutlined,SearchOutlined,CaretRightOutlined,CaretLeftOutlined  } from '@ant-design/icons';
 import ReactPaginate from 'react-paginate'
+import { delay } from 'redux-saga/effects'
 
 const Pagination=styled.div`
 
@@ -37,9 +38,12 @@ margin-top:30px;
 
 `
 
-const SearchWrapper=styled(Input.Search)`
-margin-top:30px;
-width:800px;
+const SearchWrapper=styled(Input)`
+margin:30px auto 0 auto;
+border-radius:20px;
+height:50px;
+width:500px;
+font-size:25px;
 `
 const SearchedWrapper=styled.div`
 display: flex;
@@ -61,19 +65,12 @@ margin-top:50px;
 
 const BookSearch = () => {
 
-  
-
-  
-
-
-
-
 
 
   const dispatch=useDispatch();
-  const navigate = useNavigate();
 
 const [bookName,setBookName]=useState('')
+
 
 const [showComponent,setShowComponent]=useState(false)
 
@@ -81,7 +78,6 @@ const [showComponent,setShowComponent]=useState(false)
 
 
 const {books,posts}=useSelector((state)=>state)
-const { Search } = Input;
 
 
 
@@ -90,23 +86,33 @@ const onChangeBook=useCallback((e)=>{
   console.log(e.target.value)
 },[bookName])
 
-// const successModals = () => {
-// //   Modal.success({
-// //     content: '책보기',
-// //     onOk() {navigate(`/book/${posts[0].isbn}`)},
-// //   });
-// // };
+const [selectValue,setSelectValue]=useState()
 
 
 const bookSearch=useCallback(()=>{
-    dispatch({
+
+  if(selectValue==="nickname"){
+    console.log('닉네임이다')
+  }else if(selectValue==="bookname"){
+    console.log('책이름이다')
+  }
+
+  dispatch({
         type:SEARCH_BOOK_REQUEST,
         data:bookName
     })
    
    console.log('asd')
    setShowComponent(true)
-},[bookName,books])
+
+
+
+
+
+
+
+   
+},[bookName,books,showComponent,selectValue])
 
 useEffect(()=>{
   if(localStorage.getItem('naverlogin-access-token')){
@@ -132,14 +138,6 @@ useEffect(()=>{
 
 
 
-// useEffect(()=>{
-//   dispatch({
-//       type:LOAD_MY_INFO_REQUEST
-//   })
-// },[])
-
-
-//paginate
 
 const [pageNumber,setPageNumber]=useState(0)
 
@@ -154,25 +152,48 @@ const changePage=({selected})=>{
   setPageNumber(selected)
 }
 
+const options=[{
+  value:'bookname',
+  label:'책이름'
+},
+{
+  value:'nickname',
+  label:'닉네임'
+}]
+
+
+useEffect(()=>{
+ setSelectValue(selectValue)
+ console.log(selectValue)
+},[selectValue])
+
+
+
+// const onChangeSelect=useCallback((value)=>{
+// setSelectValue(value)
+// console.log('value',value)
+// console.log(selectValue)
+// },[selectValue,options])
+
   return (
     <div>
-   
-        <Space direction="vertical">
-       
+     {/* <select style={{width:100,marginTop:10,marginRight:10,height:50}} onChange={onChangeSelect}  value={selectValue} >
+
+<option key={1} value="bookname">책이름</option>
+<option key={2} value="nickname">닉네임</option>
+
+</select> */}
+        <Space direction="horizontal">
+     
         <SearchWrapper
         onChange={onChangeBook}
          prefix={<SearchOutlined />}
-         placeholder='책을검색하세요'
-      enterButton="Search"
+         placeholder='책을 입력해주세요'
       size="large"
-      onSearch={bookSearch}
-    />      
+      onPressEnter={bookSearch}
+      />      
 
         </Space>
-      
-      
-
-
 
       <div>
 
@@ -197,12 +218,12 @@ const changePage=({selected})=>{
                   ></List.Item.Meta>
                 </List.Item>
               )}
-          ></List>
+          ></List>:(showComponent?<div style={{marginTop:100}}><Empty description="검색결과없음" /></div>:null)
 
 
 
 
-        :<Empty style={{marginTop:100}} description="검색결과 없음"/>}
+        }
           
    
           <Pagination style={{marginLeft:200}}>

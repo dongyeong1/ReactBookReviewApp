@@ -148,10 +148,36 @@ export const NAVER_LOGIN_REQUEST='NAVER_LOGIN_REQUEST';
 export const NAVER_LOGIN_SUCCESS='NAVER_LOGIN_SUCCESS';
 export const NAVER_LOGIN_FAIL='NAVER_LOGIN_FAIL';
 
+export const RATE_BOOK_POSTS_REQUEST='RATE_BOOK_POSTS_REQUEST';
+export const RATE_BOOK_POSTS_SUCCESS='RATE_BOOK_POSTS_SUCCESS';
+export const RATE_BOOK_POSTS_FAIL='RATE_BOOK_POSTS_FAIL';
+
+export const REMOVE_POST_REQUEST='REMOVE_POST_REQUEST'
+
 
 const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
         switch(action.type){
+            case REMOVE_POST_REQUEST:
+                draft.post=null
+                break;
 
+            case RATE_BOOK_POSTS_REQUEST:
+                // draft.books=[];
+                break;
+
+            case RATE_BOOK_POSTS_SUCCESS:
+                // draft.postDeleteLoading = true;
+                // draft.postDeleteSuccess = null;
+                // draft.postEditSuccess = false;
+                draft.posts=action.data
+                break;
+              case RATE_BOOK_POSTS_FAIL:
+                // draft.postDeleteLoading = false;
+                // draft.postDeleteSuccess = true;
+                // draft.user.Posts=draft.user.Posts.filter((v)=>v.id!==action.data.PostId)
+                
+
+                break;
 
             case NAVER_LOGIN_REQUEST:
                 // draft.books=[];
@@ -194,7 +220,7 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
 
 
             case BOOKS_REMOVE_REQUEST:
-                draft.books=[];
+                draft.books=null;
                 break;
 
             case POST_DELETE_REQUEST:
@@ -427,7 +453,7 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                                                     break;                                           
                                     
             case SEARCH_BOOK_REMOVE:
-                draft.books=[]
+                draft.books=null
                 break;
             default:
                 break;

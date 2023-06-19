@@ -33,7 +33,7 @@ width:100px;
 height:40px;
 border-radius:100px;
 margin-top:50px;
-margin-left:120px;
+margin-left:30px;
 `
 
 
@@ -68,10 +68,16 @@ const Login = () => {
         <Input type='password' value={password} onChange={onChangePassword} size='large'placeholder='비밀번호를 입력해주세요'/>
        
         <Buttons type='primary' className='btn'>로그인</Buttons>
+        <div style={{marginTop:10}}>
         <NaverLogin></NaverLogin>
+        </div>
+        <div style={{marginTop:10}}>
+        <KakaoLogin></KakaoLogin>
+        </div>
+        
+
         </InputWrapper>
         <div style={{width:180 ,margin:'auto',marginTop:30}}>아직 회원이 아니라면?<Link to='/signup'><a>회원가입</a></Link></div>
-        <KakaoLogin></KakaoLogin>
 
     </div>
 

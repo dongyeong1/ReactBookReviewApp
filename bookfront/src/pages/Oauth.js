@@ -61,7 +61,7 @@ console.log('qweqweqwe')
                 localStorage.setItem('naverlogin-access-token',res.data.access_token)
                 localStorage.setItem('naverlogin-token-type',res.data.token_type)
 
-                navigate('/booksearch')
+                navigate('/home')
 
             })
            })

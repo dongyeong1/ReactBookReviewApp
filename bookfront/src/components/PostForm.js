@@ -1,15 +1,20 @@
 import React, { useCallback,useState,useEffect } from 'react'
 import { Input, Button,Form,Rate} from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
-import {  ADD_POST_REQUEST } from '../reducer'
+import {  ADD_POST_REQUEST, LOAD_MY_INFO_REQUEST, NAVER_LOGIN_REQUEST } from '../reducer'
 import BookSearchFormModal from './BookSearchFormModal'
 import BookImageSelect from './BookImageSelect'
 import { useNavigate } from "react-router-dom";
 import {Modal} from 'antd'
+import styled from 'styled-components'
 
+const FormItem=styled(Form.Item)`
+label{
+    font-size:20px;
+}
+`
 
-
-const PostForm = () => {
+const PostForm = ({}) => {
     const navigate = useNavigate();
     const {post,user}=useSelector((state)=>state)
     const [searchedBook,setSearchedBook]=useState(null)
@@ -19,10 +24,10 @@ const PostForm = () => {
 
 
     useEffect(() => {
-        if (post) {
+        if (post&&post.id) {
 
            successModals()
-        
+           
         }
       }, [post]);
      
@@ -46,6 +51,26 @@ const PostForm = () => {
     },[modal])
 
 
+    useEffect(()=>{
+        if(localStorage.getItem('naverlogin-access-token')){
+          dispatch({
+            type:NAVER_LOGIN_REQUEST
+          })
+        }else if(localStorage.getItem('kakaologin-access-token')){
+          dispatch({
+            type:NAVER_LOGIN_REQUEST
+          })
+        } else{
+          dispatch({
+                  type:LOAD_MY_INFO_REQUEST
+              })
+        }
+        
+        
+        
+       
+      },[])
+      
      
 
     const submitText=useCallback(()=>{
@@ -63,47 +88,61 @@ const PostForm = () => {
                 bookname:searchedBook.title
             }
         })
-  
+
+       
 
     },[text,searchedBook,title,rate])
 
     const successModals = () => {
         Modal.success({
-          content: '게시글등록완료',
-          onOk() {navigate(`/booksearch`)},
+          content: '독후감 등록완료',
+          onOk() { },
         });
       };
 
   return (
     <div>
-        <Form onFinish={submitText}>
+        <Form    layout="vertical" onFinish={submitText}>
             {/* <label  >제목</label> */}
+
+            <div style={{display:'flex'}}>
+            <div>
             <BookImageSelect searchedBook={searchedBook} showModal={showModal}></BookImageSelect>
 
-        <Input style={{  width:400}}   value={title} onChange={onChangeTitle}  placeholder='제목'></Input>
-        <Input.TextArea style={{marginTop:20, width:400,height:150}} value={text} placeholder='책내용' onChange={onChangeText}></Input.TextArea>
-       <div style={{display:'flex',flexDirection:'column'}}>
-       <label style={{fontSize:15,marginTop:10,marginRight:370}}>평점</label>
-        <Rate onChange={onChangeRate} style={{marginTop:5,marginRight:270}} value={rate} ></Rate>
-       </div>
+            </div>
+           
 
-     
+    <div style={{marginLeft:50,marginTop:70}}>
 
-     <div style={{display:'flex', marginTop:30,marginLeft:100}}>
+        <FormItem label='제목'  required>
 
+        <Input style={{ border:0,  width:400}}   value={title} onChange={onChangeTitle}  placeholder='제목을 입력해주세요'></Input>
+        </FormItem>
+        <FormItem label="평점" required>
 
+<Rate onChange={onChangeRate} style={{marginTop:5,marginRight:270}} value={rate} ></Rate>
+</FormItem>
 
-     
-   
-
-
-
-
-     </div>
     
-     <Button style={{borderRadius:100}} size='large' type="primary" htmlType='submit'>등록하기</Button>
+    <FormItem label="내용" required>
+    <Input.TextArea style={{border:0, marginTop:20, width:400,height:150}} value={text} placeholder='내용을 입력해주세요' onChange={onChangeText}></Input.TextArea>
+    </FormItem>
+
+    
+        
+      
+
+     
+
+    
+     <Button style={{borderRadius:100,marginLeft:150}} size='large' type="primary" htmlType='submit'>등록하기</Button>
 
       
+    </div>
+
+            </div>
+           
+       
      
         </Form>
         <BookSearchFormModal setModal={setModal} modal={modal} setSearchedBook={setSearchedBook}></BookSearchFormModal>
