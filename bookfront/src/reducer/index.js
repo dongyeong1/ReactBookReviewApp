@@ -169,8 +169,12 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                 // draft.postDeleteLoading = true;
                 // draft.postDeleteSuccess = null;
                 // draft.postEditSuccess = false;
-                draft.posts=action.data
-                break;
+                if(action.data[0]){
+                    draft.posts=action.data;
+
+                }else{
+                    draft.posts=null;
+                }                break;
               case RATE_BOOK_POSTS_FAIL:
                 // draft.postDeleteLoading = false;
                 // draft.postDeleteSuccess = true;

@@ -13,7 +13,7 @@ const LoginForm = () => {
 
     const dispatch=useDispatch();
 
-    const {loginError,loginSuccess}=useSelector((state)=>state)
+    const {loginError}=useSelector((state)=>state)
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('')
 
@@ -47,22 +47,21 @@ const LoginForm = () => {
 
   return (
     <Form onFinish={onSubmit}>
-    <div>
-        <label htmlFor='user-id' >아이디</label>
-        <br/>
-        <Input type="email" name='user-id' value={email} onChange={onChangeEmail} ></Input>
-    </div>
-    <ButtonWrapper >
-        <label htmlFor='user-password' >비밀번호</label>
-        <br/>
-        <Input type="password" name='user-password' value={password} onChange={onChangePassword} ></Input>
-    </ButtonWrapper>
-    <Button type='primary' htmlType='submit' >로그인</Button>
+        <div>
+            <label htmlFor='user-id' >아이디</label>
+            <br/>
+            <Input type="email" name='user-id' value={email} onChange={onChangeEmail} ></Input>
+        </div>
+        <ButtonWrapper >
+            <label htmlFor='user-password' >비밀번호</label>
+            <br/>
+            <Input type="password" name='user-password' value={password} onChange={onChangePassword} ></Input>
+        </ButtonWrapper>
+        <Button type='primary' htmlType='submit' >로그인</Button>
         <Link to='/signup'>
-        <Button type='primary'>회원가입</Button>
+            <Button type='primary'>회원가입</Button>
         </Link>
-    
-</Form>
+    </Form>
   )
 }
 

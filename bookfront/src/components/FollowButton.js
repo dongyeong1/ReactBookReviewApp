@@ -1,5 +1,4 @@
 import React,{useCallback} from 'react'
-import { Button } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from '../reducer'
 import { MinusCircleOutlined,PlusCircleOutlined } from '@ant-design/icons';
@@ -32,21 +31,17 @@ const FollowButton = ({bookpost}) => {
         }
     },[isFollowing])
     if(showFollowButton){
-        return <div  >MyPost</div>
+        return <div>MyPost</div>
     }
   return (
     < >
         {isFollowing?  <div   loading={unfollowLoading}
-      onClick={follow}
-  >{bookpost.User.nickname}님 unFollow<MinusCircleOutlined  style={{marginLeft:10,fontSize:15}} /></div>:<div
-  
-  
-  loading={followLoading}
-  onClick={follow}
->{bookpost.User.nickname}님 Follow<PlusCircleOutlined  style={{marginLeft:10,fontSize:15}} /></div>}
-</>
-  
-  
+        onClick={follow}
+        >{bookpost.User.nickname}님 unFollow<MinusCircleOutlined  style={{marginLeft:10,fontSize:15}} /></div>:<div
+        loading={followLoading}
+        onClick={follow}
+        >{bookpost.User.nickname}님 Follow<PlusCircleOutlined  style={{marginLeft:10,fontSize:15}} /></div>}
+    </>
   )
 }
 

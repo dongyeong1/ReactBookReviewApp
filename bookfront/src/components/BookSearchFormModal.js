@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react'
-import { Modal ,Input,Space,Empty} from 'antd'
+import React, { useCallback, useState,useEffect } from 'react'
+import { Modal ,Input,Empty} from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { BOOKS_REMOVE_REQUEST, SEARCH_BOOK_REMOVE, SEARCH_BOOK_REQUEST } from '../reducer'
 import styled from 'styled-components'
 import ReactPaginate from 'react-paginate'
-import { UserOutlined,SearchOutlined,CaretRightOutlined,CaretLeftOutlined  } from '@ant-design/icons';
+import { SearchOutlined,CaretRightOutlined,CaretLeftOutlined  } from '@ant-design/icons';
 
 
 
@@ -76,7 +76,6 @@ font-size:15px;
 `
 const BookSearchFormModal = ({setModal,modal,setSearchedBook}) => {
  
-//  const [bookId,setBookId]=useState('')
 const [bookName,setBookName]=useState('')
 const [showComponent,setShowComponent]=useState(false)
 
@@ -86,7 +85,6 @@ const onChangeBook=useCallback((e)=>{
     console.log(e.target.value)
 },[bookName])
 
-// const [bookList,setBookList]=useState('')
 
 const dispatch=useDispatch();
 
@@ -97,14 +95,13 @@ const bookSearch=useCallback(()=>{
         type:SEARCH_BOOK_REQUEST,
         data:bookName
     })
-    setShowComponent(true)
-   console.log('asd')
+
+  
 
 },[bookName,books])
 
 const imageClick=useCallback((title,isbn,image)=>()=>{
   setSearchedBook({title,isbn,image})
-  // setBookId(isbn)//나중에form보낼때
   dispatch({
     type:SEARCH_BOOK_REMOVE
   })
@@ -114,14 +111,22 @@ const imageClick=useCallback((title,isbn,image)=>()=>{
 },[bookName,modal])
 
   const handleCancel=useCallback(()=>{
-    
+    setBookName('')
     setModal(false)
+    // setShowComponent(false)
     dispatch({
       type:BOOKS_REMOVE_REQUEST
     })
   },[modal])
 
 
+  useEffect(()=>{
+
+    if(books){
+      setShowComponent(true)
+  
+    }
+  },[books])
 
 //paginate
 
@@ -138,51 +143,34 @@ const changePage=({selected})=>{
   setPageNumber(selected)
 }
 
-
-
-
-//modal
-
-
   return (
     <div>
-        <ModalWrapper open={modal} onOk={handleCancel} onCancel={handleCancel} >
-         
-        <Space direction="vertical">
-       
-       <SearchWrapper
-       value={bookName}
-       onChange={onChangeBook}
-        prefix={<SearchOutlined />}
-        placeholder='책을 입력해주세요'
-     onPressEnter={bookSearch}
-     />      
+      <ModalWrapper open={modal} onOk={handleCancel} onCancel={handleCancel} >
+        <SearchWrapper
+          value={bookName}
+          onChange={onChangeBook}
+          prefix={<SearchOutlined />}
+          placeholder='책을 입력해주세요'
+          onPressEnter={bookSearch}
+          />      
+          <ResultWrapper>
+            {books?books.slice(pagesVisited,pagesVisited+PerPage).map((v)=>(
+              <Abc style={{marginBottom:10}} onClick={imageClick(v.title,v.isbn,v.image)}>
+                <img  src={v.image} style={{width:50}}></img>
+                <div style={{marginLeft:20}}>{v.title}</div>
+              </Abc>
+              )):(showComponent?<div style={{marginTop:10}}><Empty description="검색결과없음" /></div>:null)}
+          </ResultWrapper>
 
-       </Space>
-        <ResultWrapper>
-
-        {books?books.slice(pagesVisited,pagesVisited+PerPage).map((v)=>(
-       <Abc style={{marginBottom:10}} onClick={imageClick(v.title,v.isbn,v.image)}>
-        <img  src={v.image} style={{width:50}}></img>
-        <div style={{marginLeft:20}}>{v.title}</div>
-        </Abc>
-        )):(showComponent?<div style={{marginTop:10}}><Empty description="검색결과없음" /></div>:null)}
-                </ResultWrapper>
-
-                {books&&   <Pagination>
-        
-       <ReactPaginate
-       previousLabel={<CaretLeftOutlined />}
-       nextLabel={<CaretRightOutlined />}
-       pageCount={pageCount}
-       onPageChange={changePage}
-       containerClassName={'paginationBttns'}
-      
-      //  activeClassName={'paginationActive'}
-></ReactPaginate>
-
-       </Pagination>}
-
+          {books&&<Pagination>         
+            <ReactPaginate
+              previousLabel={<CaretLeftOutlined />}
+              nextLabel={<CaretRightOutlined />}
+              pageCount={pageCount}
+              onPageChange={changePage}
+              containerClassName={'paginationBttns'}
+            ></ReactPaginate>
+          </Pagination>}
       </ModalWrapper>
     
     </div>

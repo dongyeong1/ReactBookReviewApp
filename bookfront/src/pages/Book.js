@@ -1,4 +1,4 @@
-import { Button,Modal } from 'antd'
+import { Button,Empty,Modal } from 'antd'
 // import Card from 'antd/lib/card/Card'
 import { Card } from 'antd'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -12,10 +12,11 @@ import styled from 'styled-components'
 
 const Pagination=styled.div`
 
-margin-top:30px;
+margin-top:80px;
 margin-bottom:10px;
 .paginationBttns{
-  width:80%;
+  margin:0 auto;
+  width:500px;
   height:30px;
   list-style:none;
   display:flex;
@@ -41,12 +42,8 @@ margin-bottom:10px;
 
 `
 const Book = () => {
-  const navigate=useNavigate()
     const {id}=useParams();
     const {posts,book}=useSelector((state)=>state)
-
-    // var book=books.find((v)=>v.isbn===id)
-
     const dispatch=useDispatch()
   
 useEffect(()=>{
@@ -64,43 +61,38 @@ useEffect(()=>{
         })
   }
   
-  
-  
- 
 },[])
 
   
   useEffect(()=>{
-    console.log('1asdasdasdasd')
     dispatch({
       type:BOOK_LOAD_REQUEST,
       data:id
     })
-  },[])
+  },[id])
 
 
   useEffect(()=>{
-    // console.log('asdsa',book)
 
       dispatch({
         type:BOOK_POSTS_REQUEST,
         data:id
       })
-  },[])
+  },[id])
 
   const dateSort=useCallback(()=>{
     dispatch({
       type:BOOK_POSTS_REQUEST,
       data:id
     })
-  },[])
+  },[id])
 
   const rateSort=useCallback(()=>{
     dispatch({
       type:RATE_BOOK_POSTS_REQUEST,
       data:id
     })
-  },[])
+  },[id])
 
 
 
@@ -108,9 +100,6 @@ const [pageNumber,setPageNumber]=useState(0)
 
 const PerPage=5
 const pagesVisited=pageNumber*PerPage
-
-
-
 const pageCount=Math.ceil(posts&&posts.length/PerPage)
 
 const changePage=({selected})=>{
@@ -119,30 +108,23 @@ const changePage=({selected})=>{
   return (
     <div>
       <Card
-      
       style={{width:500,height:110,marginBottom:20,borderRadius:20,margin:'20px auto',backgroundColor:'lightgray'}}>
-      {/* {book&&<img src={book.image} style={{width:200}}></img>} */}
-      <Card.Meta
-          avatar={<img src={book&&book.image} style={{width:50}}></img>}
-          // title={book.title}
-        //   description={post.text}
-        description={book&&book.title}
-        
-        
-        />
+        <Card.Meta
+            avatar={<img src={book&&book.image} style={{width:50}}></img>}
+            description={book&&book.title}   
+          />
       </Card>
       <div style={{marginLeft:320}}>
         <Button size='large' onClick={dateSort} style={{borderRadius:20, marginRight:20}}>최신순</Button>
         <Button size='large' onClick={rateSort} style={{borderRadius:20}}>평점순</Button>
-        </div>
+      </div>
         {posts?posts.slice(pagesVisited,pagesVisited+PerPage).map((v)=>(
           <div>
-        <PostCard bookpost={v}></PostCard>
-      
-        </div>
-            )):<div>등록된게시물이없습니다</div>}
+            <PostCard bookpost={v}></PostCard>
+          </div>
+            )):<div style={{marginTop:30}}><Empty description="등록된 독후감이 없습니다"></Empty></div>}
 
-<Pagination style={{marginLeft:200}}>
+      <Pagination >
         {posts&&
        <ReactPaginate
        previousLabel={<CaretLeftOutlined />}
@@ -150,11 +132,9 @@ const changePage=({selected})=>{
        pageCount={pageCount}
        onPageChange={changePage}
        containerClassName={'paginationBttns'}
-      
-      //  activeClassName={'paginationActive'}
-></ReactPaginate>}
+      ></ReactPaginate>}
 
-       </Pagination>
+      </Pagination>
 
     </div>
   )

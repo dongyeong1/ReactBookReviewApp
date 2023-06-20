@@ -3,13 +3,7 @@ import { Input, Button,Rate,Modal} from 'antd'
 import { useDispatch } from 'react-redux'
 import { POST_EDIT_REQUEST } from '../reducer';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-
-
-
 import Modals from 'react-modal';
-
-
-
 
 const PostEditModal = ({editModal,setEditModal,post}) => {
     const { confirm } = Modal;
@@ -73,18 +67,17 @@ const PostEditModal = ({editModal,setEditModal,post}) => {
           });
     }) 
   return (
-      <div>
-    <Modals  isOpen={editModal} onRequestClose={handleCancel}>
-        <img style={{width:200}} src={post.src}></img>
-        <div>{post.bookname} </div>
-    
-            <div style={{marginTop:50}}>제목</div>
-            <Input  placeholder={post.title} value={title} onChange={onChangeTitle}></Input>
-            내용<Input placeholder={post.content} value={content}  onChange={onChangeContent}></Input>
-            <div>비율</div>
-            <Rate placeholder={post.rate} value={rate} defaultValue={post.rate}  onChange={onChangeRate}></Rate>
-            <div><Button style={{marginTop:20}} type='primary' htmlType='submit' onClick={showConfirm}>수정하기</Button></div>
-    </Modals>
+    <div>
+        <Modals  isOpen={editModal} onRequestClose={handleCancel}>
+                <img style={{width:200}} src={post.src}></img>
+                <div>{post.bookname} </div>
+                <div style={{marginTop:50}}>제목</div>
+                <Input  placeholder={post.title} value={title} onChange={onChangeTitle}></Input>
+                내용<Input placeholder={post.content} value={content}  onChange={onChangeContent}></Input>
+                <div>비율</div>
+                <Rate placeholder={post.rate} value={rate} defaultValue={post.rate}  onChange={onChangeRate}></Rate>
+                <div><Button style={{marginTop:20}} type='primary' htmlType='submit' onClick={showConfirm}>수정하기</Button></div>
+        </Modals>
     </div>
   )
 }

@@ -22,21 +22,21 @@ const Home = () => {
 
     const [bookName,setBookName]=useState('')
 
-const bookSearch=useCallback(()=>{
-    dispatch({
-          type:SEARCH_BOOK_REQUEST,
-          data:bookName
-      })
+    const bookSearch=useCallback(()=>{
+        dispatch({
+              type:SEARCH_BOOK_REQUEST,
+              data:bookName
+          })
 
       navigate('/booksearch')
      
-  },[bookName])
+    },[bookName])
 
 
 
   const onChangeBook=useCallback((e)=>{
     setBookName(e.target.value)
-  },[bookName])
+    },[bookName])
 
 
 
@@ -54,10 +54,7 @@ const bookSearch=useCallback(()=>{
               type:LOAD_MY_INFO_REQUEST
           })
     }
-    
-    
-    
-   
+
   },[])
   
 
@@ -69,14 +66,13 @@ const bookSearch=useCallback(()=>{
         <img src="img/logo.png" width='250'></img>
       </div>
    
-    <SearchWrapper
-    onChange={onChangeBook}
-     prefix={<SearchOutlined style={{fontSize:30}}/>}
-     placeholder='책을 검색해보세요'
-  // enterButton="Search"
-  size="large"
-  onPressEnter={bookSearch}
-/>      
+        <SearchWrapper
+          onChange={onChangeBook}
+          prefix={<SearchOutlined style={{fontSize:30}}/>}
+          placeholder='책을 검색해보세요'
+          size="large"
+          onPressEnter={bookSearch}
+        />      
 
     </Space>
   </div>

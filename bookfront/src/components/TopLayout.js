@@ -1,35 +1,131 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import App from '../App'
-import {Row,Col, Input,Button} from 'antd'
-import axios from 'axios'
+
 import { useDispatch, useSelector } from 'react-redux'
-import { ADD_BOOK, SEARCH_BOOK_REMOVE, SEARCH_BOOK_REQUEST } from '../reducer'
-import { UserOutlined,LogoutOutlined} from '@ant-design/icons';
-import { Link, Router, useNavigate } from 'react-router-dom'
+import { SEARCH_BOOK_REMOVE } from '../reducer'
+import { MenuOutlined} from '@ant-design/icons';
+import { Link, useNavigate } from 'react-router-dom'
 import ReviewModal from './ReivewModal'
-import { List } from 'antd/lib/form/Form'
 
 
-const AppWrapper=styled.div`
-display: flex;
-flex-direction: row;
+
+const NavWrapper=styled.div`
+position:relative;
+display:flex;
 justify-content: space-between;
 align-items: center ;
-
 background-color:lightgray;
-height:70px;
 
-div{
-    &:last-child{
-        margin-right:50px;
+span{
+    color:white;
+    text-decoration:none;
+}
+padding: 8px 12px;
 
-    }
-    &:first-child{
-        margin-left:100px;
-    }
+.nav_logo{
+    font-size:24px;
+    
+}
+
+.nav_menu{
+    display:flex;
+    list-style:none;
+    padding-left:0;
 
 }
+
+.menuactive{
+    display:flex;
+    list-style:none;
+    padding-left:0;
+
+}
+
+.nav_menu >li{
+    padding:8px 12px;
+    margin:0 20px 0 20px;
+}
+
+.menuactive>li{
+    padding:8px 12px;
+    margin:0 20px 0 20px;
+}
+
+.nav_link >span{
+    padding: 8px 12px;
+}
+
+.linkactive>span{
+    padding: 8px 12px;
+
+}
+
+.nav_menu>li:hover{
+    background-color:red;
+    border-radius:10px;
+}
+
+.menuactive>li:hover{
+    background-color:red;
+    border-radius:10px;
+}
+
+.nav_ham{
+    position:absolute;
+    font-size:25px;
+    display:none;
+    right:30px;
+}
+@media screen and (max-width: 700px){
+    flex-direction: column;
+    align-items:flex-start;
+    padding: 8px 24px;
+
+    .nav_menu{
+        display:none;
+    }
+
+    .menuactive{
+        flex-direction:column;
+        align-items:center;
+        width:100%;
+        display:flex;
+
+    }
+
+    .menuactive>li{
+       text-align:center;
+        width:100%;
+        list-style:none;
+
+    }
+
+    .nav_link{
+        display:none;
+    }
+
+    .linkactive{
+        display:flex;
+        justify-content:center;
+        width:100%;
+    }
+
+
+    .nav_ham{
+        display:block;
+    }
+
+    
+    
+
+}
+
+// @media screen and (max-width: 700px) {
+//     flex-direction: column;
+
+
+
+// }
 
 `
 
@@ -58,7 +154,12 @@ const logOut=useCallback(()=>{
 
 
 const modalHandle=useCallback(()=>{
+    
+    dispatch({
+        type:SEARCH_BOOK_REMOVE
+    })
     setShowModal(true)
+   
 },[])
 
 const bookRemove=useCallback(()=>{
@@ -68,28 +169,50 @@ const bookRemove=useCallback(()=>{
 },[])
 
 
+const [menuActive,setMenuActive]=useState(false)
+const [linkActive,setLinkActive]=useState(false)
+
+
+const menuHandle=useCallback(()=>{
+   
+
+    setMenuActive(prev=>!prev)
+
+    setLinkActive(prev=>!prev)
+},[])
+
+
   return (
     <div>
         <ReviewModal modal={showModal} setModal={setShowModal}></ReviewModal>
-        <AppWrapper>
-        <Link to='/home'><div style={{fontSize:18}}>홈</div></Link>
-        <Link  to="/booksearch"><div onClick={bookRemove} style={{marginRight:100,fontSize:18}} className='ser'>책검색</div></Link>
+        
+        <NavWrapper className='navbar' >
 
-         <div style={{marginRight:400 ,fontSize:18}} onClick={modalHandle}>독후감쓰기</div>
-        {user&&<Link to="/mypage"><div  style={{fontSize:18}}>마이페이지</div></Link>}
 
-        {localStorage.getItem('naverlogin-access-token')||localStorage.getItem('kakaologin-access-token')?
-       <Link to='/home'><div   onClick={logOut} style={{width:100,fontSize:18}}>로그아웃</div></Link> :
-        <Link to='/login'><div  style={{fontSize:18}} style={{width:100}}>로그인</div></Link>
+            <div className='nav_logo'>
+                <Link to='/home'><span >Home</span></Link>
+            </div>
+            <ul className={menuActive?'menuactive':'nav_menu'}>
+                <li>{user&&<Link  to="/booksearch"><span onClick={bookRemove} style={{fontSize:18}} className='ser'>책검색</span></Link>}</li>
+                <li>{user&&<Link> <span style={{ fontSize:18}} onClick={modalHandle}>리뷰쓰기</span></Link>}</li>
+                <li> {user&&<Link to="/mypage"><span  style={{ fontSize:18}}>마이페이지</span></Link>}</li>
+            </ul>
 
-        }
+            <div className={linkActive?'linkactive':'nav_link'}>
+                {localStorage.getItem('naverlogin-access-token')||localStorage.getItem('kakaologin-access-token')?
+                <Link to='/home'><span   onClick={logOut} style={{fontSize:18}}>로그아웃</span></Link> :
+                <Link to='/login'><span  style={{ fontSize:18}}>로그인</span></Link>}
+            </div >
 
-         
-               
-                {/* <p><LogoutOutlined /></p> */}
- 
-        </AppWrapper>
-      
+                <div className='nav_ham'>
+                    <i onClick={menuHandle}><MenuOutlined /></i>
+                </div>
+       
+       
+        </NavWrapper>
+        
+        
+        
     </div>
   )
 }
