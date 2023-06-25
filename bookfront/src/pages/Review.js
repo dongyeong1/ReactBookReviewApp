@@ -17,11 +17,11 @@ const Review = () => {
     const dispatch=useDispatch()
    
 useEffect(()=>{
-  if(localStorage.getItem('naverlogin-access-token')){
+  if(sessionStorage.getItem('naverlogin-access-token')){
     dispatch({
       type:NAVER_LOGIN_REQUEST
     })
-  }else if(localStorage.getItem('kakaologin-access-token')){
+  }else if(sessionStorage.getItem('kakaologin-access-token')){
     dispatch({
       type:NAVER_LOGIN_REQUEST
     })

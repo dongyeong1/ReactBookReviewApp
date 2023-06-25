@@ -1,7 +1,7 @@
 import React, { useCallback,useState,useEffect } from 'react'
 import { Input, Button,Form,Rate} from 'antd'
-import { useDispatch, useSelector } from 'react-redux'
-import {  ADD_POST_REQUEST, LOAD_MY_INFO_REQUEST, NAVER_LOGIN_REQUEST } from '../reducer'
+import { useDispatch, useSelector, } from 'react-redux'
+import {  ADD_POST_REQUEST, LOAD_MY_INFO_REQUEST, NAVER_LOGIN_REQUEST, REMOVE_POST_REQUEST } from '../reducer'
 import BookSearchFormModal from './BookSearchFormModal'
 import BookImageSelect from './BookImageSelect'
 import { useNavigate } from "react-router-dom";
@@ -14,12 +14,46 @@ label{
 }
 `
 
-const PostForm = ({}) => {
+const ReviewWrapper=styled.div`
+display:flex;
+`
+
+// style={{ border:0,  width:400}}
+const ContentWrapper=styled.div`
+.textArea{
+border:0px;
+margin-top:20px;
+width:400px;
+height:150px;
+}
+
+margin-left:50px;
+margin-top:70px;
+.ant-input{
+border:0px;
+width:400px;
+}
+.ant-rate{
+margin-top:5px;
+margin-right:270px;
+}
+.ant-btn{
+    border-radius:100px;
+    margin-left:150px;
+}
+`
+const TextArea=styled(Input.TextArea)`
+
+`
+
+const PostForm = ({reviewSetModal}) => {
     const {post,user}=useSelector((state)=>state)
     const [searchedBook,setSearchedBook]=useState(null)
     const [title,setTitle]=useState('')
     const [text,setText]=useState('')
     const [rate,setRate]=useState(0)
+    const navigate = useNavigate();
+    const dispatch=useDispatch();
 
 
     useEffect(() => {
@@ -27,11 +61,11 @@ const PostForm = ({}) => {
 
            successModals()
            
+           
         }
       }, [post]);
      
     const [modal,setModal]=useState(false)
-    const dispatch=useDispatch()
     const onChangeText=useCallback((e)=>{
         setText(e.target.value)
     },[text])
@@ -51,11 +85,11 @@ const PostForm = ({}) => {
 
 
     useEffect(()=>{
-        if(localStorage.getItem('naverlogin-access-token')){
+        if(sessionStorage.getItem('naverlogin-access-token')){
           dispatch({
             type:NAVER_LOGIN_REQUEST
           })
-        }else if(localStorage.getItem('kakaologin-access-token')){
+        }else if(sessionStorage.getItem('kakaologin-access-token')){
           dispatch({
             type:NAVER_LOGIN_REQUEST
           })
@@ -88,36 +122,44 @@ const PostForm = ({}) => {
     const successModals = () => {
         Modal.success({
           content: '독후감 등록완료',
-          onOk() { },
+          onOk(){
+            dispatch({
+                type:REMOVE_POST_REQUEST
+            })
+            reviewSetModal(false)
+
+          }   
+          ,
         });
       };
 
   return (
     <div>
         <Form    layout="vertical" onFinish={submitText}>
-            {/* <label  >제목</label> */}
 
-        <div style={{display:'flex'}}>
+        <ReviewWrapper >
             <div>
             <BookImageSelect searchedBook={searchedBook} showModal={showModal}></BookImageSelect>
             </div>
            
 
-            <div style={{marginLeft:50,marginTop:70}}>
+            <ContentWrapper >
 
-            <FormItem label='제목'  required>
-                <Input style={{ border:0,  width:400}}   value={title} onChange={onChangeTitle}  placeholder='제목을 입력해주세요'></Input>
-            </FormItem>
-            <FormItem label="평점" required>
-                <Rate onChange={onChangeRate} style={{marginTop:5,marginRight:270}} value={rate} ></Rate>
-            </FormItem>
-            <FormItem label="내용" required>
-                <Input.TextArea style={{border:0, marginTop:20, width:400,height:150}} value={text} placeholder='내용을 입력해주세요' onChange={onChangeText}></Input.TextArea>
-            </FormItem>
-            <Button style={{borderRadius:100,marginLeft:150}} size='large' type="primary" htmlType='submit'>등록하기</Button>
-            </div>
+                <FormItem label='제목'  required>
+                    <Input    value={title} onChange={onChangeTitle}  placeholder='제목을 입력해주세요'></Input>
+                </FormItem>
+                <FormItem label="평점" required>
+                    <Rate onChange={onChangeRate}  value={rate} ></Rate>
+                </FormItem>
+                <FormItem label="내용" required>
+                    <Input.TextArea 
+                    className='textArea'
+                    value={text} placeholder='내용을 입력해주세요' onChange={onChangeText}></Input.TextArea>
+                </FormItem>
+                <Button  size='large' type="primary" htmlType='submit'>등록하기</Button>
+            </ContentWrapper>
 
-        </div>
+        </ReviewWrapper>
         </Form>
             <BookSearchFormModal setModal={setModal} modal={modal} setSearchedBook={setSearchedBook}></BookSearchFormModal>
     </div>

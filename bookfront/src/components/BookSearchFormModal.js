@@ -74,6 +74,10 @@ height:40px;
 width:200px;
 font-size:15px;
 `
+const EmptyWrapper=styled.div`
+margin-top:10px;
+`
+
 const BookSearchFormModal = ({setModal,modal,setSearchedBook}) => {
  
 const [bookName,setBookName]=useState('')
@@ -83,6 +87,7 @@ const [showComponent,setShowComponent]=useState(false)
 const onChangeBook=useCallback((e)=>{
     setBookName(e.target.value)
     console.log(e.target.value)
+
 },[bookName])
 
 
@@ -91,10 +96,12 @@ const dispatch=useDispatch();
 const {books}=useSelector((state)=>state)
 
 const bookSearch=useCallback(()=>{
+
     dispatch({
         type:SEARCH_BOOK_REQUEST,
         data:bookName
     })
+    setShowComponent(true)
 
   
 
@@ -123,7 +130,6 @@ const imageClick=useCallback((title,isbn,image)=>()=>{
   useEffect(()=>{
 
     if(books){
-      setShowComponent(true)
   
     }
   },[books])
@@ -156,10 +162,10 @@ const changePage=({selected})=>{
           <ResultWrapper>
             {books?books.slice(pagesVisited,pagesVisited+PerPage).map((v)=>(
               <Abc style={{marginBottom:10}} onClick={imageClick(v.title,v.isbn,v.image)}>
-                <img  src={v.image} style={{width:50}}></img>
+                <img  src={v.image} width='50px'></img>
                 <div style={{marginLeft:20}}>{v.title}</div>
               </Abc>
-              )):(showComponent?<div style={{marginTop:10}}><Empty description="검색결과없음" /></div>:null)}
+              )):(showComponent?<EmptyWrapper ><Empty description="검색결과없음" /></EmptyWrapper>:null)}
           </ResultWrapper>
 
           {books&&<Pagination>         

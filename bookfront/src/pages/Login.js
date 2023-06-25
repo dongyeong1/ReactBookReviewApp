@@ -5,7 +5,12 @@ import { Link } from 'react-router-dom';
 import NaverLogin from '../components/NaverLogin';
 import KakaoLogin from '../components/KakaoLogin';
 
-
+const NaverLoginWrapper=styled.div`
+margin-top:10px;
+`
+const KakaoLoginWrapper=styled.div`
+margin-top:10px;
+`
 
 const InputWrapper = styled.div`
 margin:auto;
@@ -61,12 +66,12 @@ const Login = () => {
             <Input ref={inputRef} type='email' name="user-email" value={email} onChange={onChangeEmail} size='large' placeholder='이메일을 입력해주세요' />
             <Input type='password' value={password} onChange={onChangePassword} size='large'placeholder='비밀번호를 입력해주세요'/>      
             <Buttons type='primary' className='btn'>로그인</Buttons>
-            <div style={{marginTop:10}}>
+            <NaverLoginWrapper>
             <NaverLogin></NaverLogin>
-            </div>
-            <div style={{marginTop:10}}>
+            </NaverLoginWrapper>
+            <KakaoLoginWrapper>
             <KakaoLogin></KakaoLogin>
-            </div>
+            </KakaoLoginWrapper>
           </InputWrapper>
         <div style={{width:180 ,margin:'auto',marginTop:30}}>아직 회원이 아니라면?<Link to='/signup'><a>회원가입</a></Link></div>
 

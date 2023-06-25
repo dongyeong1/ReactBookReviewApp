@@ -9,11 +9,35 @@ import { detailDate } from '../function';
 import FollowButton from './FollowButton';
 
 
-
+const Cards=styled(Card)`
+    width:500px;
+    height:160px;
+    margin-bottom:70px;
+    margin-top:20px;
+    border-radius:20px;
+    .icon{
+        margin-left:10px;
+        font-size:15px;
+    }
+ 
+    .ant-card-meta-description{
+        cursor:pointer;
+    }   
+    .ant-card-meta-title{
+       font-size:16px;
+    }   
+    .rate{
+        position:relative;
+        bottom:90px;
+        left:150px;
+    }
+    
+`
+// cursor:'pointer'
 const CardWrapper = styled.div`
 .ant-card-meta-title{
-    margin-top:5px;
-    margin-right:350px;
+    width:70px;
+    margin-right:370px;
 }   
 .ant-card-meta-description{
     margin-right:100px;
@@ -30,17 +54,17 @@ const PostCard = ({ bookpost }) => {
 
 
   const dispatch=useDispatch()
-  const {user,book}=useSelector((state)=>state)
+  const {user}=useSelector((state)=>state)
   const id = useSelector((state) => state.user && state.user.id);
   const [like,setLike]=useState(false)
   const [showComment,setShowComment]=useState(false)
 
   useEffect(()=>{
-    if(localStorage.getItem('naverlogin-access-token')){
+    if(sessionStorage.getItem('naverlogin-access-token')){
       dispatch({
         type:NAVER_LOGIN_REQUEST
       })
-    }else if(localStorage.getItem('kakaologin-access-token')){
+    }else if(sessionStorage.getItem('kakaologin-access-token')){
       dispatch({
         type:NAVER_LOGIN_REQUEST
       })
@@ -55,22 +79,31 @@ const PostCard = ({ bookpost }) => {
 
 
 const onLike=useCallback((postId)=>{
-
-    dispatch({
-        type:LIKE_POST_REQUEST,
-        data:{postId,userId:user.id}
-    })
-    setLike((prev)=>!prev)
-
+    if(user){
+        dispatch({
+            type:LIKE_POST_REQUEST,
+            data:{postId,userId:user.id}
+        })
+        setLike((prev)=>!prev)
+    
+    }else{
+        alert('로그인을 해주세요!')
+    }
+   
 },[like,user])
 
 
 const onUnLike=(postId)=>{
-    dispatch({
-        type:UNLIKE_POST_REQUEST,
-        data:{postId,userId:user.id}
-    })
-    setLike((prev)=>!prev)
+    if(user){
+        dispatch({
+            type:UNLIKE_POST_REQUEST,
+            data:{postId,userId:user.id}
+        })
+        setLike((prev)=>!prev)
+    }else{
+        alert('로그인을 해주세요!')
+    }
+    
 }
 
 
@@ -109,36 +142,30 @@ setShowComment((prev)=>!prev)
     <CardWrapper key={bookpost.id}>
      
 
-      <Card
+      <Cards
       
-       style={{  width:500,height:160,marginBottom:70,marginTop:20,borderRadius:20}}
        actions={[
-            <div>{liked?<div type='primary' onClick={()=>onUnLike(bookpost.id)} style={{borderRadius:50}} >좋아요{bookpost.Likers.length}개<HeartTwoTone size='large' style={{marginLeft:10,fontSize:15}} ></HeartTwoTone></div>:
-            <div type='primary' onClick={()=>onLike(bookpost.id)} style={{borderRadius:50}} >좋아요{bookpost.Likers.length}개<HeartOutlined  size='large' style={{marginLeft:10,fontSize:15}} ></HeartOutlined></div>
-            }</div>,
-            
-            <div><div type='primary'  style={{borderRadius:50,marginLeft:20}} type='primary' onClick={onToggleComment}>댓글{bookpost.Comments.length}개<MessageOutlined style={{marginLeft:10,fontSize:15}} /></div></div>,
-        
-            <div
-            style={{position:'relative'}}
-            >{user&&<FollowButton bookpost={bookpost}/>}</div>       
+            <div>{liked?<div  onClick={()=>onUnLike(bookpost.id)} style={{borderRadius:50}} >좋아요{bookpost.Likers.length}개<HeartTwoTone className='icon' size='large'  ></HeartTwoTone></div>:
+            <div onClick={()=>onLike(bookpost.id)} style={{borderRadius:50}} >좋아요{bookpost.Likers.length}개<HeartOutlined  size='large' className='icon'  ></HeartOutlined></div>
+            }</div>,       
+            <div><div  onClick={onToggleComment}>댓글{bookpost.Comments.length}개<MessageOutlined   className='icon'  /></div></div>,
+            <div>{user&&<FollowButton bookpost={bookpost}/>}</div>       
         ]}
       >
           
         <Card.Meta
                avatar={<Avatar size='large'>{bookpost.User.nickname}</Avatar>}
 
-        style={{}}
        
-          title={<div><div style={{fontSize:16}}>{bookpost.title}</div><span style={{fontSize:11}}>{detailDate(new Date(bookpost.createdAt))}</span></div>}
+          title={<div><div >{bookpost.title}</div><span style={{fontSize:11}}>{detailDate(new Date(bookpost.createdAt))}</span></div>}
        
         description={<div onClick={showModal}>{textCut(bookpost.content,15,' ...상세보기')}</div>}
         
         />
          
-        <Rate  style={{position:'relative' ,bottom:90,left:150}} defaultValue={bookpost.rate} disabled ></Rate>
+        <Rate  className='rate' defaultValue={bookpost.rate} disabled ></Rate>
 
-      </Card>
+      </Cards>
 
     {showComment?
         <div><CommentForm bookpostId={bookpost.id}></CommentForm>

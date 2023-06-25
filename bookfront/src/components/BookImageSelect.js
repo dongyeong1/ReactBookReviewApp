@@ -1,37 +1,45 @@
 import React, { useEffect } from 'react'
 import {Button, Card} from 'antd'
+import styled from 'styled-components'
+
+const Cards=styled(Card)`
+margin-top:30px;
+width:350px;
+height:510px;
+
+.ant-card-meta-description{
+border-radius:30px;
+margin-left:80px;
+}   
+`
+
+const ButtonWrapper=styled.div`
+text-align:center;
+.button{
+  border-radius:30px;
+  margin-top:200px;
+}
+`
 
 const BookImageSelect = ({showModal,searchedBook}) => {
 
   return (
   <div>
   {searchedBook?
-    <Card
+    <Cards
     hoverable
-    style={{
-      marginTop:30,
-      width: 350,
-      height:510
-    }}
     cover={<img alt="example" height='400' src={searchedBook.image} />}
     >
     <Card.Meta title={searchedBook.title}
-      description={ <Button type='primary' size='large' style={{borderRadius:30,marginLeft:80}} onClick={showModal}> 다른책 검색하기</Button>}
+      description={ <Button type='primary' size='large'  onClick={showModal}> 다른책 검색하기</Button>}
     ></Card.Meta>
-    </Card>:<Card
+    </Cards>:<Cards
       hoverable
-      style={{
-        marginTop:30,
-
-        width: 350,
-        height:510
-      }}
-      
       >
-    <div style={{textAlign:'center'}}>
-    <Button type='primary' size='large' style={{borderRadius:30,marginTop:200}} onClick={showModal}>책 검색하기</Button>
-    </div>
-    </Card>}
+    <ButtonWrapper>
+      <Button className='button' type='primary' size='large' onClick={showModal}>책 검색하기</Button>
+    </ButtonWrapper>
+    </Cards>}
     </div>
   )
 }

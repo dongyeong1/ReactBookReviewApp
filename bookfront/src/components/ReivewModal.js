@@ -1,9 +1,6 @@
 import React,{useCallback} from 'react'
 import { useDispatch } from 'react-redux'
 import {  REMOVE_POST_REQUEST } from '../reducer';
-
-
-
 import Modals from 'react-modal';
 import PostForm from './PostForm';
 const customStyles = {
@@ -39,7 +36,7 @@ const ReviewModal = ({modal,setModal}) => {
   return (
       <div>
     <Modals  style={customStyles} isOpen={modal} onRequestClose={handleCancel}>    
-        <PostForm ></PostForm>
+        <PostForm reviewSetModal={setModal} ></PostForm>
     </Modals>
     </div>
   )

@@ -9,7 +9,7 @@ const FollowModal = ({followModal,setFollowModal,followList}) => {
       <div>
         <Modal title="팔로우목록" open={followModal} onOk={handleCancel} onCancel={handleCancel} >
                     {followList&&followList.map((f,i)=>(
-                        <div><p>{i+1}.</p><p>{f.nickname}</p></div>
+                        <div><p>{f.nickname}</p></div>
                     ))}
         </Modal>
     </div>

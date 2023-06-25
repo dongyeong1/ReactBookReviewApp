@@ -12,15 +12,35 @@ import ReactPaginate from 'react-paginate'
 import PostModal from '../components/PostModal';
 import FollowModal from '../components/FollowModal';
 import FollowerModal from '../components/FollowerModal';
+import { StyleProvider } from '@ant-design/cssinjs';
+const ProfileWrapper=styled(Card)`
+width:500px;
+height:160px;
+margin:20px auto;
+border-radius:20px;
+background-color:lightGray;
+`
 
-const ProfileWrapper=styled.div`
-// .ant-card-meta-detail{
-//     height:120px;
-// }
+
+const RateWrapper=styled(Rate)`
+position:relative;
+bottom:90px;
+left:160px;
+`
+
+const Cards=styled(Card)`
+width:500px;
+ height:160px;
+border-radius:20px;
+ margin:20px auto;
 `
 
 const CardWrapper=styled.div`
+
+
 .ant-card-meta-title{
+    width:70px;
+    margin-top:10px;
     margin-right:300px;
 }   
 
@@ -39,9 +59,8 @@ margin-top:80px;
 margin-bottom:10px;
 
 .paginationBttns{
-    margin: 0 auto;
-
-    // margin: 0 auto;
+    // margin:'auto';
+ 
   width:500px;
   height:30px;
   list-style:none;
@@ -67,6 +86,11 @@ margin-bottom:10px;
 }
 
 `
+const PaginationWrapper=styled.div`
+width:500px;
+margin:20px auto;
+`
+
 const MyPage = () => {
     const { confirm } = Modal;
 
@@ -78,11 +102,11 @@ const MyPage = () => {
 
 
     useEffect(()=>{
-    if(localStorage.getItem('naverlogin-access-token')){
+    if(sessionStorage.getItem('naverlogin-access-token')){
       dispatch({
         type:NAVER_LOGIN_REQUEST
       })
-    }else if(localStorage.getItem('kakaologin-access-token')){
+    }else if(sessionStorage.getItem('kakaologin-access-token')){
       dispatch({
         type:NAVER_LOGIN_REQUEST
       })
@@ -191,9 +215,7 @@ const MyPage = () => {
   return (
     <div >
         
-        <ProfileWrapper>
-            <Card
-                style={{  width:500,height:160,marginBottom:50,marginTop:20,borderRadius:20,margin:'20px auto',backgroundColor:'lightgray'}}
+            <ProfileWrapper
                 actions={[
                 <div  key="twit">독후감갯수<br />{user&&user.Posts.length}</div>,
                 <div onClick={()=>followModalHandle(user.Followings)} key="following">팔로잉<br />{user&&user.Followings.length}</div>,
@@ -204,36 +226,33 @@ const MyPage = () => {
                 style={{height:60,marginTop:10,}}
                 title={user&&<div style={{fontSize:22}}>{user.nickname+'님 환영합니다!'}</div>}
             />
-            </Card>
-        </ProfileWrapper>
+            </ProfileWrapper>
         
         
         
         
         {user&&user.Posts.slice(pagesVisited,pagesVisited+PerPage).map((post)=>(
     <CardWrapper >
-        <Card
+        <Cards
             actions={[
                 <div onClick={()=>showEditModal(post.id)}> 수정하기</div>,
                 <div   onClick={showConfirm(post.id)}> 삭제하기</div>
 
             ]}
-            style={{  width:500,height:160,borderRadius:20,margin:'20px auto'}}
             key={post.bookname}
         >
            <Card.Meta     
             avatar={<img  src={post.src} style={{width:70}}></img>}
             title={<div><div style={{fontSize:16}}>{post.title}</div><span style={{fontSize:11}}>{detailDate(new Date(post.createdAt))}</span></div>}
-            description={<div onClick={()=>showModal(post)}>{textCut(post.content,15,' ...상세보기')}</div>}
+            description={<div style={{cursor:'pointer'}} onClick={()=>showModal(post)}>{textCut(post.content,15,' ...상세보기')}</div>}
             />
-        <Rate style={{position:'relative',bottom:90,left:160}} disabled value={post.rate}></Rate>
+        <RateWrapper  disabled value={post.rate}></RateWrapper>
         
-       <div style={{position:'relative', bottom:90}}>
        
-       </div>
-        </Card>
+        </Cards>
     </CardWrapper>
     ))}
+        <PaginationWrapper >
         <Pagination>
             {user&&user.Posts&&
             <ReactPaginate
@@ -245,6 +264,7 @@ const MyPage = () => {
             ></ReactPaginate>}
 
        </Pagination>
+        </PaginationWrapper>
         
     
         <PostEditModal post={modalPost}  editModal={editModal} setEditModal={setEditModal} ></PostEditModal>

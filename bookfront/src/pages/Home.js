@@ -1,10 +1,10 @@
 import React,{useCallback,useState,useEffect} from 'react'
-import { Button, Form, Input ,Space,Spin,Modal, Empty,Card, List} from 'antd'
+import {  Input ,Space} from 'antd'
 import styled from 'styled-components'
-import { UserOutlined,SearchOutlined,CaretRightOutlined,CaretLeftOutlined  } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 import { LOAD_MY_INFO_REQUEST, NAVER_LOGIN_REQUEST, SEARCH_BOOK_REQUEST } from '../reducer';
 import { useDispatch, useSelector } from 'react-redux'
-import { Link,useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 
 const SearchWrapper=styled(Input)`
@@ -41,11 +41,11 @@ const Home = () => {
 
 
   useEffect(()=>{
-    if(localStorage.getItem('naverlogin-access-token')){
+    if(sessionStorage.getItem('naverlogin-access-token')){
       dispatch({
         type:NAVER_LOGIN_REQUEST
       })
-    }else if(localStorage.getItem('kakaologin-access-token')){
+    }else if(sessionStorage.getItem('kakaologin-access-token')){
       dispatch({
         type:NAVER_LOGIN_REQUEST
       })

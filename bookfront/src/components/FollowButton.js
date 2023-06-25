@@ -2,7 +2,12 @@ import React,{useCallback} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from '../reducer'
 import { MinusCircleOutlined,PlusCircleOutlined } from '@ant-design/icons';
+import styled from 'styled-components';
 
+const FollowButtonWrapper=styled.div`
+margin-left:10px;
+font-size:15px;
+`
 const FollowButton = ({bookpost}) => {
 
     const dispatch=useDispatch()
@@ -35,12 +40,12 @@ const FollowButton = ({bookpost}) => {
     }
   return (
     < >
-        {isFollowing?  <div   loading={unfollowLoading}
+        {isFollowing?  <FollowButtonWrapper   loading={unfollowLoading}
         onClick={follow}
-        >{bookpost.User.nickname}님 unFollow<MinusCircleOutlined  style={{marginLeft:10,fontSize:15}} /></div>:<div
+        >{bookpost.User.nickname}님 unFollow<MinusCircleOutlined  /></FollowButtonWrapper>:<FollowButtonWrapper
         loading={followLoading}
         onClick={follow}
-        >{bookpost.User.nickname}님 Follow<PlusCircleOutlined  style={{marginLeft:10,fontSize:15}} /></div>}
+        >{bookpost.User.nickname}님 Follow<PlusCircleOutlined /></FollowButtonWrapper>}
     </>
   )
 }

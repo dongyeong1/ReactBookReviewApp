@@ -1,15 +1,29 @@
 import React,{useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { Modal } from 'antd';
+import {LoadingOutlined,} from "@ant-design/icons";
 
 
 const Oauth = () => {
 
 
     const navigate=useNavigate();
+    const success=()=>{
+        Modal.success({
+          content: (
+            <div>
+                <h3>로딩중...</h3>
+            </div>
+        ),
+          centered: true,
+          icon: <LoadingOutlined />,
+        }); 
+      }
 
 
     useEffect(()=>{
+        success()
 
         let client_id = process.env.REACT_APP_NAVER_LOGIN_CLIENT_ID;
         let client_secret = process.env.REACT_APP_NAVER_LOGIN_CLIENT_SECRET;
@@ -39,15 +53,17 @@ const Oauth = () => {
                 }
             })
             .then((res)=>{
-                localStorage.setItem('naverlogin-access-token',res.data.access_token)
-                localStorage.setItem('naverlogin-token-type',res.data.token_type)
+                sessionStorage.setItem('naverlogin-access-token',res.data.access_token)
+                sessionStorage.setItem('naverlogin-token-type',res.data.token_type)
+                Modal.destroyAll();
+
                 navigate('/home')
             })
            })
         },[])
 
   return (
-    <div>로딩중</div>
+    <div></div>
   )
 }
 

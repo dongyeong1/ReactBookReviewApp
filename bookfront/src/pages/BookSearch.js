@@ -7,11 +7,17 @@ import styled from 'styled-components'
 import { SearchOutlined,CaretRightOutlined,CaretLeftOutlined  } from '@ant-design/icons';
 import ReactPaginate from 'react-paginate'
 
-const Pagination=styled.div`
+const ListWrapper=styled(List)`
+  width:700px;
+  margin:30px auto;
+`
 
+const Pagination=styled.div`
+width:700px;
+margin:20px auto;
 margin-top:30px;
 .paginationBttns{
-  width:80%;
+  width:700px;
   height:30px;
   list-style:none;
   display:flex;
@@ -66,13 +72,13 @@ const {books}=useSelector((state)=>state)
 const onChangeBook=useCallback((e)=>{
   setBookName(e.target.value)
   console.log(e.target.value)
+
 },[bookName])
 
 
 useEffect(()=>{
 
   if(books){
-    setShowComponent(true)
 
   }
 },[books])
@@ -86,17 +92,20 @@ const bookSearch=useCallback(()=>{
         type:SEARCH_BOOK_REQUEST,
         data:bookName
     })
-   
+    setTimeout(()=>{
+      setShowComponent(true)
+
+    },100)
    
 },[bookName,books,showComponent])
 
 
 useEffect(()=>{
-  if(localStorage.getItem('naverlogin-access-token')){
+  if(sessionStorage.getItem('naverlogin-access-token')){
     dispatch({
       type:NAVER_LOGIN_REQUEST
     })
-  }else if(localStorage.getItem('kakaologin-access-token')){
+  }else if(sessionStorage.getItem('kakaologin-access-token')){
     dispatch({
       type:NAVER_LOGIN_REQUEST
     })
@@ -143,8 +152,7 @@ const changePage=({selected})=>{
 
       <div>
 
-      {books?<List
-            style={{width:700,margin:'30px auto'}}
+      {books?<ListWrapper
               itemLayout="horizontal"
               dataSource={books.slice(pagesVisited,pagesVisited+PerPage)}
               renderItem={(item)=>(
@@ -159,9 +167,9 @@ const changePage=({selected})=>{
                   ></List.Item.Meta>
                 </List.Item>
               )}
-          ></List>:(showComponent?<div style={{marginTop:100}}><Empty description="검색결과없음" /></div>:null)}
+          ></ListWrapper>:(showComponent?<div style={{marginTop:100}}><Empty description="검색결과없음" /></div>:null)}
 
-      <Pagination style={{marginLeft:200}}>
+      <Pagination >
         {books&&<ReactPaginate
           previousLabel={<CaretLeftOutlined />}
           nextLabel={<CaretRightOutlined />}

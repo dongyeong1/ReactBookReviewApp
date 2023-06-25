@@ -9,6 +9,24 @@ import { BOOK_LOAD_REQUEST, BOOK_POSTS_REQUEST, LOAD_MY_INFO_REQUEST, NAVER_LOGI
 import ReactPaginate from 'react-paginate'
 import { UserOutlined,SearchOutlined,CaretRightOutlined,CaretLeftOutlined  } from '@ant-design/icons';
 import styled from 'styled-components'
+const CardWrapper=styled(Card)`
+width:500px;
+height:110px;
+border-radius:20px;
+margin:20px auto;
+background-color:lightgray;
+`
+const ButtonWrapper=styled.div`
+margin-left:320px;
+.ant-btn{
+  border-radius:20px;
+  margin-left:20px;
+}
+`
+
+const EmptyWrapper=styled.div`
+margin-top:50px;
+`
 
 const Pagination=styled.div`
 
@@ -47,11 +65,11 @@ const Book = () => {
     const dispatch=useDispatch()
   
 useEffect(()=>{
-  if(localStorage.getItem('naverlogin-access-token')){
+  if(sessionStorage.getItem('naverlogin-access-token')){
     dispatch({
       type:NAVER_LOGIN_REQUEST
     })
-  }else if(localStorage.getItem('kakaologin-access-token')){
+  }else if(sessionStorage.getItem('kakaologin-access-token')){
     dispatch({
       type:NAVER_LOGIN_REQUEST
     })
@@ -107,22 +125,22 @@ const changePage=({selected})=>{
 }
   return (
     <div>
-      <Card
-      style={{width:500,height:110,marginBottom:20,borderRadius:20,margin:'20px auto',backgroundColor:'lightgray'}}>
+      <CardWrapper
+      >
         <Card.Meta
             avatar={<img src={book&&book.image} style={{width:50}}></img>}
             description={book&&book.title}   
           />
-      </Card>
-      <div style={{marginLeft:320}}>
-        <Button size='large' onClick={dateSort} style={{borderRadius:20, marginRight:20}}>최신순</Button>
-        <Button size='large' onClick={rateSort} style={{borderRadius:20}}>평점순</Button>
-      </div>
+      </CardWrapper>
+      <ButtonWrapper >
+        <Button size='large' onClick={dateSort} >최신순</Button>
+        <Button size='large' onClick={rateSort} >평점순</Button>
+      </ButtonWrapper>
         {posts?posts.slice(pagesVisited,pagesVisited+PerPage).map((v)=>(
           <div>
             <PostCard bookpost={v}></PostCard>
           </div>
-            )):<div style={{marginTop:30}}><Empty description="등록된 독후감이 없습니다"></Empty></div>}
+            )):<EmptyWrapper><Empty description="등록된 독후감이 없습니다"></Empty></EmptyWrapper>}
 
       <Pagination >
         {posts&&

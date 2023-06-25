@@ -2,11 +2,12 @@ import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { SEARCH_BOOK_REMOVE } from '../reducer'
+import { LOG_OUT_SUCCESS, SEARCH_BOOK_REMOVE } from '../reducer'
 import { MenuOutlined} from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom'
 import ReviewModal from './ReivewModal'
 
+import { Modal } from 'antd';
 
 
 const NavWrapper=styled.div`
@@ -120,12 +121,7 @@ padding: 8px 12px;
 
 }
 
-// @media screen and (max-width: 700px) {
-//     flex-direction: column;
 
-
-
-// }
 
 `
 
@@ -138,14 +134,34 @@ const {user}=useSelector((state)=>state)
 const navigate=useNavigate()
 const dispatch=useDispatch();
 
+const success=()=>{
+    Modal.success({
+      content: (
+          <div>
+              <h3>로그아웃 성공</h3>
+          </div>
+      ),
+      centered: true,
+    fontSize:20
+    }); 
+  }
+
 const logOut=useCallback(()=>{
-    if(localStorage.getItem('naverlogin-access-token')){
-        localStorage.removeItem("naverlogin-access-token");
-        localStorage.removeItem("naverlogin-token-type");
+    if(sessionStorage.getItem('naverlogin-access-token')){
+        sessionStorage.removeItem("naverlogin-access-token");
+        sessionStorage.removeItem("naverlogin-token-type");
+        dispatch({
+            type:LOG_OUT_SUCCESS
+        })
+        success()
     
-    }else if(localStorage.getItem('kakaologin-access-token')){
-        localStorage.removeItem("kakaologin-access-token");
-        localStorage.removeItem("kakaologin-token-type");
+    }else if(sessionStorage.getItem('kakaologin-access-token')){
+        sessionStorage.removeItem("kakaologin-access-token");
+        sessionStorage.removeItem("kakaologin-token-type");
+        dispatch({
+            type:LOG_OUT_SUCCESS
+        })
+        success()
     }
     
 
@@ -193,13 +209,13 @@ const menuHandle=useCallback(()=>{
                 <Link to='/home'><span >Home</span></Link>
             </div>
             <ul className={menuActive?'menuactive':'nav_menu'}>
-                <li>{user&&<Link  to="/booksearch"><span onClick={bookRemove} style={{fontSize:18}} className='ser'>책검색</span></Link>}</li>
+                <li><Link  to="/booksearch"><span onClick={bookRemove} style={{fontSize:18}} className='ser'>책검색</span></Link></li>
                 <li>{user&&<Link> <span style={{ fontSize:18}} onClick={modalHandle}>리뷰쓰기</span></Link>}</li>
                 <li> {user&&<Link to="/mypage"><span  style={{ fontSize:18}}>마이페이지</span></Link>}</li>
             </ul>
 
             <div className={linkActive?'linkactive':'nav_link'}>
-                {localStorage.getItem('naverlogin-access-token')||localStorage.getItem('kakaologin-access-token')?
+                {sessionStorage.getItem('naverlogin-access-token')||sessionStorage.getItem('kakaologin-access-token')?
                 <Link to='/home'><span   onClick={logOut} style={{fontSize:18}}>로그아웃</span></Link> :
                 <Link to='/login'><span  style={{ fontSize:18}}>로그인</span></Link>}
             </div >

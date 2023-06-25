@@ -31,7 +31,7 @@ function* searchBook(action){
 
     try{
       
-        const result =yield call(searchBookAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        const result =yield call(searchBookAPI,action.data) 
         yield put({
             type:SEARCH_BOOK_SUCCESS,
             data:result.data.items
@@ -69,7 +69,7 @@ function* bookLoad(action){
 
     try{
       
-        const result =yield call(bookLoadAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        const result =yield call(bookLoadAPI,action.data)
         yield put({
             type:BOOK_LOAD_SUCCESS,
             data:result.data.items
@@ -104,7 +104,7 @@ function* signUp(action){
 
     try{
        
-        const result =yield call(signUpAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        const result =yield call(signUpAPI,action.data) 
         yield put({
             type:SIGNUP_SUCCESS,
            
@@ -135,7 +135,7 @@ function* login(action){
 
     try{
         
-        const result =yield call(loginAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        const result =yield call(loginAPI,action.data) 
         yield put({
             type:LOGIN_SUCCESS,
             data:result.data
@@ -175,7 +175,7 @@ function* addPost(action){
 
     try{
        
-        const result =yield call(addPostAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        const result =yield call(addPostAPI,action.data) 
         yield put({
             type:ADD_POST_SUCCESS,
             data:result.data
@@ -209,7 +209,7 @@ function* addComment(action){
 
     try{
      
-        const result =yield call(addCommentAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        const result =yield call(addCommentAPI,action.data) 
         yield put({
             type:ADD_COMMENT_SUCCESS,
             data:result.data
@@ -240,7 +240,7 @@ function* rateSort(action){
 
     try{
         
-        const result =yield call(rateSortAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        const result =yield call(rateSortAPI,action.data) 
         yield put({
             type:RATE_BOOK_POSTS_SUCCESS,
             data:result.data
@@ -271,7 +271,7 @@ function* bookPosts(action){
 
     try{
         
-        const result =yield call(bookPostsAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        const result =yield call(bookPostsAPI,action.data)
         yield put({
             type:BOOK_POSTS_SUCCESS,
             data:result.data
@@ -302,7 +302,7 @@ function* loadPost(action){
 
     try{
   
-        const result =yield call(loadPostAPI,action.data) //call은동기니깐 put할때까지 기다려준다
+        const result =yield call(loadPostAPI,action.data) 
         yield put({
             type:POST_LOAD_SUCCESS,
             data:result.data
@@ -491,7 +491,6 @@ function likePostAPI(data) {
   function* logOut() {
     try {
       const result = yield call(logOutAPI);
-      // yield delay(1000);
       yield put({
         type: LOG_OUT_SUCCESS,
       });
@@ -513,9 +512,9 @@ function likePostAPI(data) {
 
     let client_secret = process.env.REACT_APP_NAVER_LOGIN_CLIENT_SECRET;
 
-    if(localStorage.getItem('naverlogin-access-token')){
-        const access_token=localStorage.getItem('naverlogin-access-token')
-        const token_type=localStorage.getItem('naverlogin-token-type')
+    if(sessionStorage.getItem('naverlogin-access-token')){
+        const access_token=sessionStorage.getItem('naverlogin-access-token')
+        const token_type=sessionStorage.getItem('naverlogin-token-type')
         return   axios({
             method:'post',
             url:'http://localhost:3065/user/naverlogin',
@@ -529,9 +528,9 @@ function likePostAPI(data) {
       
     
         })
-    }else if(localStorage.getItem('kakaologin-access-token')){
-        const access_token=localStorage.getItem('kakaologin-access-token')
-        const token_type=localStorage.getItem('kakaologin-token-type')
+    }else if(sessionStorage.getItem('kakaologin-access-token')){
+        const access_token=sessionStorage.getItem('kakaologin-access-token')
+        const token_type=sessionStorage.getItem('kakaologin-token-type')
 
         return axios({
             method:'post',
@@ -549,14 +548,7 @@ function likePostAPI(data) {
 
    
     
-    // axios.post(naver_api_url,{
-    //     headers:{
-    //         Accept: "application/json",
-    //         'X-Naver-Client-Id': client_id,
-    //         'X-Naver-Client-Secret': client_secret
-    //     }
-    // })
-    
+
   }
   
   function* naverLogin(action) {
@@ -565,7 +557,6 @@ function likePostAPI(data) {
 
       const result = yield call(NaverLoginAPI,action.data);
       console.log('sagadata',result)
-      // yield delay(1000);
       yield put({
         type: NAVER_LOGIN_SUCCESS,
         data:result.data

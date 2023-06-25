@@ -8,10 +8,9 @@ const PostModal = ({modalcontent,modal,setModal}) => {
     },[modal])
   return (
       <div>
-        {modalcontent&&<Modal title={modalcontent.title} open={modal} onOk={handleCancel} onCancel={handleCancel} >
-
-        <p>{modalcontent.content}</p>
-
+        {modalcontent&&
+        <Modal title={modalcontent.title} open={modal} onOk={handleCancel} onCancel={handleCancel} >
+            <p>{modalcontent.content}</p>
         </Modal>}
       </div>
   )

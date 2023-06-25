@@ -9,7 +9,7 @@ const FollowerModal = ({follwerModal,setFollowerModal,followerList}) => {
       <div>
         <Modal title="팔로워목록" open={follwerModal} onOk={handleCancel} onCancel={handleCancel} >
             {followerList&&followerList.map((f,i)=>(
-                <div><p>{i+1}.</p><p>{f.nickname}</p></div>
+                <div><p>{f.nickname}</p></div>
             ))  }
         </Modal>
     </div>

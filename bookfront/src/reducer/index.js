@@ -1,5 +1,4 @@
 import {produce} from 'immer';
-import shortId from 'shortid'
  const initState = {
     books:null,
     book:null,
@@ -53,18 +52,6 @@ import shortId from 'shortid'
 
 
 
-
-const dummyPost = (data) => ({
-    id: shortId.generate(),
-      content: data.text,
-      isbn:data.isbn,
-  User: {
-    id: 1,
-    nickname: '김동영',
-  },
-  Images: [],
-  Comments: [],
-});
 
 //액션
 
@@ -162,13 +149,10 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                 break;
 
             case RATE_BOOK_POSTS_REQUEST:
-                // draft.books=[];
                 break;
 
             case RATE_BOOK_POSTS_SUCCESS:
-                // draft.postDeleteLoading = true;
-                // draft.postDeleteSuccess = null;
-                // draft.postEditSuccess = false;
+              
                 if(action.data[0]){
                     draft.posts=action.data;
 
@@ -176,27 +160,21 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
                     draft.posts=null;
                 }                break;
               case RATE_BOOK_POSTS_FAIL:
-                // draft.postDeleteLoading = false;
-                // draft.postDeleteSuccess = true;
-                // draft.user.Posts=draft.user.Posts.filter((v)=>v.id!==action.data.PostId)
+               
                 
 
                 break;
 
             case NAVER_LOGIN_REQUEST:
-                // draft.books=[];
+              
                 break;
 
             case NAVER_LOGIN_SUCCESS:
-                // draft.postDeleteLoading = true;
-                // draft.postDeleteSuccess = null;
-                // draft.postEditSuccess = false;
+            
                 draft.user=action.data.exUser
                 break;
               case NAVER_LOGIN_FAIL:
-                // draft.postDeleteLoading = false;
-                // draft.postDeleteSuccess = true;
-                // draft.user.Posts=draft.user.Posts.filter((v)=>v.id!==action.data.PostId)
+             
                 
 
                 break;
@@ -204,19 +182,14 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
 
 
             case BOOK_LOAD_REQUEST:
-                // draft.books=[];
                 break;
 
             case BOOK_LOAD_SUCCESS:
-                // draft.postDeleteLoading = true;
-                // draft.postDeleteSuccess = null;
-                // draft.postEditSuccess = false;
+               
                 draft.book=action.data[0]
                 break;
               case BOOK_LOAD_FAIL:
-                // draft.postDeleteLoading = false;
-                // draft.postDeleteSuccess = true;
-                // draft.user.Posts=draft.user.Posts.filter((v)=>v.id!==action.data.PostId)
+               
                 
 
                 break;
@@ -384,7 +357,6 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
             case ADD_COMMENT_SUCCESS:
                     draft.addCommentLoading=false;
                     draft.addCommentSuccess=true;
-                    // draft.post=action.data
                     const findIndex=draft.posts.findIndex((v)=>v.id===action.data.postId)
                     console.log('findindexxxx',action.data.postId)
                     draft.posts[findIndex].Comments.unshift(action.data.fullComment);
@@ -400,7 +372,6 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
             case BOOK_POSTS_SUCCESS:
                             draft.bookPostsLoading=false;
                             draft.bookPostsSuccess=true;
-                            //W draft.post=action.data
                             if(action.data[0]){
                                 draft.posts=action.data;
 
@@ -418,7 +389,6 @@ const rootReducer=(state=initState,action)=>produce(state,(draft)=>{
             case POST_LOAD_SUCCESS:
                                     draft.postloadLoading=false;
                                     draft.postloadSuccess=true;
-                                    // draft.post=action.data
                                     draft.post=action.data;
                                     break;
             case POST_LOAD_FAIL:
