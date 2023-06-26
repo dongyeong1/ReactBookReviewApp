@@ -1,13 +1,18 @@
-import {all,fork,call,put, takeLatest, delay} from 'redux-saga/effects'
+import {all,fork,call,put, takeLatest, } from 'redux-saga/effects'
 import { ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_POST_REQUEST, ADD_POST_SUCCESS, BOOK_LOAD_REQUEST, BOOK_LOAD_SUCCESS, BOOK_POSTS_REQUEST, BOOK_POSTS_SUCCESS, FOLLOW_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS, LIKE_POST_FAIL, LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LOAD_MY_INFO_FAILURE, LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOG_OUT_FAILURE, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, NAVER_LOGIN_FAIL, NAVER_LOGIN_REQUEST, NAVER_LOGIN_SUCCESS, POST_DELETE_FAIL, POST_DELETE_REQUEST, POST_DELETE_SUCCESS, POST_EDIT_FAIL, POST_EDIT_REQUEST, POST_EDIT_SUCCESS, POST_LOAD_REQUEST, POST_LOAD_SUCCESS, RATE_BOOK_POSTS_REQUEST, RATE_BOOK_POSTS_SUCCESS, SEARCH_BOOK_FAIL, SEARCH_BOOK_REQUEST, SEARCH_BOOK_SUCCESS, SIGNUP_REQUEST, SIGNUP_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNLIKE_POST_FAIL, UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS } from '../reducer'
-import { useNavigate } from 'react-router-dom'
 
 import axios from 'axios';
-import NaverLogin from '../components/NaverLogin';
+import { KAKAO_ACCESS_TOKEN, KAKAO_TOKEN_TYPE, NAVER_ACCESS_TOKEN, NAVER_TOKEN_TYPE } from '../components/LoginToken';
 
 
 
-axios.defaults.withCredentials=true
+
+
+export const instance=axios.create({
+    baseURL:'http://localhost:3065',
+    withCredentials:true
+})
+
 
 function searchBookAPI(data){
 
@@ -89,12 +94,7 @@ function* bookLoad(action){
 
 
 function signUpAPI(data){
-
-    return axios.post('http://localhost:3065/user/signup',{
-        email:data.email,
-        password:data.password,
-        nickname:data.nickname
-    })
+    return instance.post('/user/signup',data)
    
 }
 
@@ -122,7 +122,7 @@ function* signUp(action){
 
 function loginAPI(data){
  
-    return axios.post('http://localhost:3065/user/login',{
+    return instance.post('/user/login',{
         email:data.email,
         password:data.password,
     })
@@ -157,7 +157,8 @@ function* login(action){
 
 function addPostAPI(data){
  
-    return axios.post('http://localhost:3065/post/addpost',{
+ 
+    return instance.post('/post/addpost',{
         title:data.title,
         text:data.text,
         rate:data.rate,
@@ -194,7 +195,7 @@ function* addPost(action){
 
 function addCommentAPI(data){
  
-    return axios.post('http://localhost:3065/post/addcomment',{
+    return instance.post('/post/addcomment',{
         comment:data.comment,
         postId:data.postId,
         userId:data.userId
@@ -227,7 +228,7 @@ function* addComment(action){
 
 function rateSortAPI(data){
  
-    return axios.post('http://localhost:3065/post/bookPostsRate',{
+    return instance.post('/post/bookPostsRate',{
         isbn:data
        
     })
@@ -258,7 +259,7 @@ function* rateSort(action){
 
 function bookPostsAPI(data){
  
-    return axios.post('http://localhost:3065/post/bookPosts',{
+    return instance.post('/post/bookPosts',{
         isbn:data
        
     })
@@ -289,7 +290,7 @@ function* bookPosts(action){
 
 function loadPostAPI(data){
  
-    return axios.post('http://localhost:3065/post/loadPost',{
+    return instance.post('/post/loadPost',{
         postId:data.postId
        
     })
@@ -322,7 +323,7 @@ function* loadPost(action){
 
 
 function likePostAPI(data) {
-    return axios.patch(`http://localhost:3065/post/${data.postId}/like`,{
+    return instance.patch(`/post/${data.postId}/like`,{
         userId:data.userId
     });
   }
@@ -346,7 +347,7 @@ function likePostAPI(data) {
 
   
   function unlikePostAPI(data) {
-    return axios.patch(`http://localhost:3065/post/${data.postId}/unlike`,
+    return instance.patch(`/post/${data.postId}/unlike`,
     {userId:data.userId}
     );
   }
@@ -373,7 +374,7 @@ function likePostAPI(data) {
 
 
   function loadMyInfoAPI() {
-    return axios.get('http://localhost:3065/user');
+    return instance.get('/user');
   }
   
   function* loadMyInfo() {
@@ -395,7 +396,7 @@ function likePostAPI(data) {
 
 
   function followAPI(data) {
-    return axios.patch(`http://localhost:3065/user/${data.followUserId}/follow`,{
+    return instance.patch(`/user/${data.followUserId}/follow`,{
         userId:data.userId
     });
   }
@@ -417,7 +418,7 @@ function likePostAPI(data) {
   }
   
   function unfollowAPI(data) {
-    return axios.patch(`http://localhost:3065/user/${data.followUserId}/unfollow`,{
+    return instance.patch(`/user/${data.followUserId}/unfollow`,{
         userId:data.userId
     });
   }
@@ -440,7 +441,7 @@ function likePostAPI(data) {
 
 
   function deletePostAPI(data) {
-    return axios.delete(`http://localhost:3065/post/${data}/delete`);
+    return instance.delete(`/post/${data}/delete`);
   }
   
   function* deletePost(action) {
@@ -460,7 +461,7 @@ function likePostAPI(data) {
   }
   
   function editPostAPI(data) {
-    return axios.post(`http://localhost:3065/post/${data.postId}/edit`,{
+    return instance.post(`/post/${data.postId}/edit`,{
         content:data.content,
         title:data.title,
         rate:data.rate
@@ -475,7 +476,7 @@ function likePostAPI(data) {
         data: result.data,
       });
     } catch (err) {
-      console.log('asdasdasdasd',err);
+      console.log(err);
       yield put({
         type: POST_EDIT_FAIL,
         error: 'Err',
@@ -485,7 +486,7 @@ function likePostAPI(data) {
   
 
   function logOutAPI() {
-    return axios.post('http://localhost:3065/user/logout');
+    return instance.post('/user/logout');
   }
   
   function* logOut() {
@@ -508,47 +509,27 @@ function likePostAPI(data) {
 
   function NaverLoginAPI(data) {
     let client_id = process.env.REACT_APP_NAVER_LOGIN_CLIENT_ID;
-  
-
     let client_secret = process.env.REACT_APP_NAVER_LOGIN_CLIENT_SECRET;
 
-    if(sessionStorage.getItem('naverlogin-access-token')){
-        const access_token=sessionStorage.getItem('naverlogin-access-token')
-        const token_type=sessionStorage.getItem('naverlogin-token-type')
-        return   axios({
-            method:'post',
-            url:'http://localhost:3065/user/naverlogin',
-            data:{access_token,token_type},
-            headers:{
-                Accept: "application/json",
-                'X-Naver-Client-Id': client_id,
-                'X-Naver-Client-Secret': client_secret
-            }
-            
-      
-    
+    if(sessionStorage.getItem(NAVER_ACCESS_TOKEN)){
+        const access_token=sessionStorage.getItem(NAVER_ACCESS_TOKEN)
+        const token_type=sessionStorage.getItem(NAVER_TOKEN_TYPE)
+        return instance.post('/user/naverlogin',{
+            access_token,token_type
+        },{
+            Accept: "application/json",
+            'X-Naver-Client-Id': client_id,
+            'X-Naver-Client-Secret': client_secret
         })
-    }else if(sessionStorage.getItem('kakaologin-access-token')){
-        const access_token=sessionStorage.getItem('kakaologin-access-token')
-        const token_type=sessionStorage.getItem('kakaologin-token-type')
-
-        return axios({
-            method:'post',
-            url:'http://localhost:3065/user/kakaologin',
-            data:{access_token,token_type},
-            headers:{
-                "Content-Type" : "application/x-www-form-urlencoded",
-            }
-            
-
+    }else if(sessionStorage.getItem(KAKAO_ACCESS_TOKEN)){
+        const access_token=sessionStorage.getItem(KAKAO_ACCESS_TOKEN)
+        const token_type=sessionStorage.getItem(KAKAO_TOKEN_TYPE)
+        return instance.post('/user/kakaologin',{
+            access_token,token_type
+        },{
+            "Content-Type" : "application/x-www-form-urlencoded",
         })
-
     }
-
-
-   
-    
-
   }
   
   function* naverLogin(action) {

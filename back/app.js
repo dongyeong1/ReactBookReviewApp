@@ -9,7 +9,6 @@ const session = require("express-session");
 const cookieParser=require('cookie-parser')
 const dotenv=require('dotenv')
 
-const axios=require('axios')
 
 dotenv.config()
 
@@ -41,8 +40,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-    //   .then(ans => res.send(ans));
-//   });
 
 
 app.use('/post',postRouter)

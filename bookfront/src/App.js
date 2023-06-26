@@ -7,14 +7,13 @@ import {Col,Row} from 'antd'
 import Signup from './pages/SignUp';
 import TopLayout from './components/TopLayout';
 
-import Review from './pages/Review';
 import Book from './pages/Book';
 import BookSearch from './pages/BookSearch';
 
 import MyPage from './pages/MyPage';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Oauth from './pages/Oauth';
+import NaverOauth from './pages/NaverOauth';
 
 import KakaoOauth from './pages/KakaoOauth';
 function App() {
@@ -33,11 +32,9 @@ function App() {
         <Routes>
           <Route exact path='/home'  element={<Home></Home>}>
           </Route>
-          <Route exact path='/Oauth'  element={<Oauth></Oauth>}>
+          <Route exact path='/NaverOauth'  element={<NaverOauth></NaverOauth>}>
           </Route>
           <Route exact path='/KakaoOauth'  element={<KakaoOauth></KakaoOauth>}>
-          </Route>
-          <Route exact path='/review'  element={<Review></Review>}>
           </Route>
           <Route exact path='/booksearch'  element={<BookSearch></BookSearch>}>
           </Route>

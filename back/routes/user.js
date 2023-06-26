@@ -19,15 +19,17 @@ router.post('/kakaologin',async(req,res)=>{
         }
     })
 
-    //  console.log('asdxzxzdsa',kakaoinformation.data)
 
     const exUser= await User.findOne({
         where:{email:kakaoinformation.data.id},
+        order : [[ { model : Post }, 'createdAt', "DESC"]],
+
         attributes: {
             exclude: ['password']
           },
           include: [{
             model: Post,
+            order:['createdAt','DESC'],
             include:[{
                 model:User,
                 as:'Likers',
@@ -58,9 +60,13 @@ router.post('/kakaologin',async(req,res)=>{
         })
         const exUser= await User.findOne({
             where:{email:kakaoinformation.data.id},
+            order : [[ { model : Post }, 'createdAt', "DESC"]],
+
             attributes: {
                 exclude: ['password']
               },
+              order : [[ { model : Post }, 'createdAt', "DESC"]],
+
               include: [{
                 model: Post,
                 include:[{
@@ -83,12 +89,10 @@ router.post('/kakaologin',async(req,res)=>{
               }]
         })
         res.status(200).json({exUser,token_type:req.body.token_type,access_token:req.body.access_token})
-        //  res.redirect('http://localhost:3000/booksearch')
 
     }else{
        
         res.status(200).json({exUser,token_type:req.body.token_type,access_token:req.body.access_token})
-        //  res.redirect('http://localhost:3000/booksearch')
 
     }
 
@@ -100,25 +104,7 @@ router.post('/kakaologin',async(req,res)=>{
 
 
 router.post('/naverlogin',  async(req, res)=> {
-    // res.send('asddd')
-    // console.log('resultt')
-    // let client_id = 'RZjIjcttj92TkKDum6v0';
-    // let client_secret = 'djDwzBEP60';
-    // let redirectURI = encodeURI('http://localhost:3065/user/naverlogin');
-    // let code = req.query.code;
-    // let callback_state = req.query.state;
-  
-    // let api_url = 'https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=RZjIjcttj92TkKDum6v0&client_secret='+client_secret+'&redirect_uri='+redirectURI+'&code='+code+'&state='+callback_state;
-    //   const token= await axios.get(api_url,{
-    //     headers:{
-    //         Accept: "application/json",
-    //         'X-Naver-Client-Id': client_id,
-    //         'X-Naver-Client-Secret': client_secret
-    //     }
-    // })
 
-    console.log('qweqwewqeqwewqeqweqwe')
-    console.log('asdaszzzzzz',req.body)
    
       const information=  await axios({
           method: 'get',
@@ -132,12 +118,12 @@ router.post('/naverlogin',  async(req, res)=> {
 
 
 
-            console.log('zxctdata',information.data)
             const exUser= await User.findOne({
                 where:{email:information.data.response.id},
                 attributes: {
                     exclude: ['password']
                   },
+                  order : [[ { model : Post }, 'createdAt', "DESC"]],
                   include: [{
                     model: Post,
                     include:[{
@@ -157,7 +143,8 @@ router.post('/naverlogin',  async(req, res)=> {
                       model:Post,
                       as:'Liked',
                       attributes:['id']
-                  }]
+                  }],
+
                 
             })
 
@@ -175,6 +162,8 @@ router.post('/naverlogin',  async(req, res)=> {
                       },
                       include: [{
                         model: Post,
+                        order:[['createdAt','DESC'],],
+
                         include:[{
                             model:User,
                             as:'Likers',
@@ -192,27 +181,21 @@ router.post('/naverlogin',  async(req, res)=> {
                           model:Post,
                           as:'Liked',
                           attributes:['id']
-                      }]
+                      }],
+
                 })
                 res.status(200).json({exUser,token_type:req.body.token_type,access_token:req.body.access_token})
-                //  res.redirect('http://localhost:3000/booksearch')
 
             }else{
                
                 res.status(200).json({exUser,token_type:req.body.token_type,access_token:req.body.access_token})
-                //  res.redirect('http://localhost:3000/booksearch')
 
             }
 
             
             console.log(res)
        
-            // res.redirect('http://localhost:3000/booksearch')
-      
-// console.log('qwqwqw',res)
-    // res.send(ans.data)
-// })
-
+ 
 });
 
 
@@ -224,6 +207,8 @@ router.get('/',async(req,res,next)=>{
             })
             const fullUserWithoutPassword = await User.findOne({
                 where: { id: user.id },
+                order : [[ { model : Post }, 'createdAt', "DESC"]],
+
                 attributes: {
                   exclude: ['password']
                 },
@@ -250,7 +235,7 @@ router.get('/',async(req,res,next)=>{
               })
             res.status(200).json(fullUserWithoutPassword)
         }else{
-            res.status(200).json(null)
+            res.status(202).json(null)
         }
     }catch(err){
         console.log(err)
@@ -276,6 +261,7 @@ router.post('/login', (req, res, next) => {
         }
         const fullUserWithoutPassword = await User.findOne({
           where: { id: user.id },
+          order : [[ { model : Post }, 'createdAt', "DESC"]],
           attributes: {
             exclude: ['password']
           },
@@ -307,9 +293,9 @@ router.post('/login', (req, res, next) => {
 		req.session.destroy();
 
 		if (err) {
-			res.redirect("/");
+			res.status(200).redirect("/");
 		} else {
-            res.clearCookie('connect.sid');
+            res.status(200).clearCookie('connect.sid');
 			res.status(200).send("server ok: 로그아웃 완료");
 		}
 	});
@@ -333,7 +319,7 @@ router.post('/signup',async(req,res)=>{
             nickname:req.body.nickname,
             password:hashedpassword
         })
-        res.status(200).send('ok')
+        res.status(201).send('회원가입완료')
     }catch(err){
         console.log(err)
     }

@@ -93,7 +93,7 @@ router.post('/bookPostsRate',async(req,res)=>{
         }
     ]
     })
-    res.status(201).json(posts)
+    res.status(200).json(posts)
 })
 
 
@@ -121,7 +121,7 @@ router.post('/bookPosts',async(req,res)=>{
         }
     ]
     })
-    res.status(201).json(posts)
+    res.status(200).json(posts)
 })
 
 router.post('/loadPost',async(req,res)=>{
@@ -144,7 +144,7 @@ router.post('/loadPost',async(req,res)=>{
             }
         ]
         })
-        res.status(201).json(post)
+        res.status(200).json(post)
 
     }catch(err){
 console.log(err)
@@ -159,7 +159,7 @@ router.patch('/:postId/like', async (req, res, next) => { // PATCH /post/1/like
         return res.status(403).send('게시글이 존재하지 않습니다.');
       }
       await post.addLikers(req.body.userId);
-      res.json({ PostId: post.id, UserId: req.body.userId });
+      res.status(200).json({ PostId: post.id, UserId: req.body.userId });
     } catch (error) {
       console.error(error);
       next(error);
@@ -168,13 +168,12 @@ router.patch('/:postId/like', async (req, res, next) => { // PATCH /post/1/like
   
   router.patch('/:postId/unlike', async (req, res, next) => { // DELETE /post/1/like
     try {
-        console.log('deleteuserId',req.body.userId)
       const post = await Post.findOne({ where: { id: req.params.postId }});
       if (!post) {
         return res.status(403).send('게시글이 존재하지 않습니다.');
       }
       await post.removeLikers(req.body.userId);
-      res.json({ PostId: post.id, UserId: req.body.userId });
+      res.status(200).json({ PostId: post.id, UserId: req.body.userId });
     } catch (error) {
       console.error(error);
       next(error);
@@ -198,7 +197,7 @@ router.patch('/:postId/like', async (req, res, next) => { // PATCH /post/1/like
       })
 
        const updatedPost=await Post.findOne({ where: { id: req.params.postId }});
-      res.status(200).json({ PostId: post.id, updatedPost: updatedPost });
+      res.status(201).json({ PostId: post.id, updatedPost: updatedPost });
     } catch (error) {
         console.log(error)
       next(error);
