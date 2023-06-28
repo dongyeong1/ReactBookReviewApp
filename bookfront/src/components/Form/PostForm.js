@@ -9,10 +9,25 @@ import {
 } from "../../reducer";
 import BookSearchFormModal from "../Modal/BookSearchFormModal";
 import BookImageSelect from "../BookImageSelect";
-import { useNavigate } from "react-router-dom";
 import { Modal } from "antd";
 import styled from "styled-components";
 import { KAKAO_ACCESS_TOKEN, NAVER_ACCESS_TOKEN } from "../LoginToken";
+
+const ErrorContent = styled.div`
+    color: red;
+    margin: auto;
+    width: 120px;
+`;
+
+const ErrorWrapper = styled.div`
+    margin-top: 5px;
+    width: 400px;
+`;
+const ImageErrorWrapper = styled.div`
+    margin-top: 5px;
+
+    width: 350px;
+`;
 
 const FormItem = styled(Form.Item)`
     label {
@@ -24,17 +39,16 @@ const ReviewWrapper = styled.div`
     display: flex;
 `;
 
-// style={{ border:0,  width:400}}
 const ContentWrapper = styled.div`
     .textArea {
         border: 0px;
         margin-top: 20px;
         width: 400px;
-        height: 150px;
+        height: 120px;
     }
 
     margin-left: 50px;
-    margin-top: 70px;
+    margin-top: 30px;
     .ant-input {
         border: 0px;
         width: 400px;
@@ -42,6 +56,7 @@ const ContentWrapper = styled.div`
     .ant-rate {
         margin-top: 5px;
         margin-right: 270px;
+        width: 200px;
     }
     .ant-btn {
         border-radius: 100px;
@@ -51,12 +66,17 @@ const ContentWrapper = styled.div`
 const TextArea = styled(Input.TextArea)``;
 
 const PostForm = ({ reviewSetModal }) => {
-    const { post, user } = useSelector((state) => state);
+    const { post, user, addPostLoading } = useSelector((state) => state);
+
+    const [imageError, setImageError] = useState(false);
+    const [titleError, setTitleError] = useState(false);
+    const [rateError, setRateError] = useState(false);
+    const [textError, setTextError] = useState(false);
+
     const [searchedBook, setSearchedBook] = useState(null);
-    const [title, setTitle] = useState("");
-    const [text, setText] = useState("");
-    const [rate, setRate] = useState(0);
-    const navigate = useNavigate();
+    const [title, setTitle] = useState();
+    const [text, setText] = useState();
+    const [rate, setRate] = useState();
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -65,10 +85,17 @@ const PostForm = ({ reviewSetModal }) => {
         }
     }, [post]);
 
+    useEffect(() => {
+        if (searchedBook) {
+            setImageError(false);
+        }
+    }, [searchedBook]);
+
     const [modal, setModal] = useState(false);
     const onChangeText = useCallback(
         (e) => {
             setText(e.target.value);
+            setTextError(false);
         },
         [text]
     );
@@ -76,6 +103,7 @@ const PostForm = ({ reviewSetModal }) => {
     const onChangeTitle = useCallback(
         (e) => {
             setTitle(e.target.value);
+            setTitleError(false);
         },
         [title]
     );
@@ -83,6 +111,7 @@ const PostForm = ({ reviewSetModal }) => {
     const onChangeRate = useCallback(
         (e) => {
             setRate(e);
+            setRateError(false);
         },
         [rate]
     );
@@ -108,19 +137,43 @@ const PostForm = ({ reviewSetModal }) => {
     }, []);
 
     const submitText = useCallback(() => {
-        dispatch({
-            type: ADD_POST_REQUEST,
-            data: {
-                userId: user.id,
-                title,
-                text,
-                rate,
-                isbn: searchedBook.isbn,
-                image: searchedBook.image,
-                bookname: searchedBook.title,
-            },
-        });
-    }, [text, searchedBook, title, rate]);
+        if (text && searchedBook && title && rate) {
+            dispatch({
+                type: ADD_POST_REQUEST,
+                data: {
+                    userId: user.id,
+                    title,
+                    text,
+                    rate,
+                    isbn: searchedBook.isbn,
+                    image: searchedBook.image,
+                    bookname: searchedBook.title,
+                },
+            });
+        } else {
+            if (!text) {
+                setTextError(true);
+            }
+            if (!searchedBook) {
+                setImageError(true);
+            }
+            if (!title) {
+                setTitleError(true);
+            }
+            if (!rate) {
+                setRateError(true);
+            }
+        }
+    }, [
+        text,
+        searchedBook,
+        title,
+        rate,
+        imageError,
+        titleError,
+        rateError,
+        textError,
+    ]);
 
     const successModals = () => {
         Modal.success({
@@ -140,9 +193,15 @@ const PostForm = ({ reviewSetModal }) => {
                 <ReviewWrapper>
                     <div>
                         <BookImageSelect
+                            setImageError={setImageError}
                             searchedBook={searchedBook}
                             showModal={showModal}
                         ></BookImageSelect>
+                        {imageError ? (
+                            <ImageErrorWrapper>
+                                <ErrorContent>책을 검색해주세요!</ErrorContent>
+                            </ImageErrorWrapper>
+                        ) : null}
                     </div>
 
                     <ContentWrapper>
@@ -152,9 +211,27 @@ const PostForm = ({ reviewSetModal }) => {
                                 onChange={onChangeTitle}
                                 placeholder="제목을 입력해주세요"
                             ></Input>
+                            {titleError ? (
+                                <ErrorWrapper>
+                                    <ErrorContent>
+                                        제목을 입력해주세요!
+                                    </ErrorContent>
+                                </ErrorWrapper>
+                            ) : null}
                         </FormItem>
                         <FormItem label="평점" required>
-                            <Rate onChange={onChangeRate} value={rate}></Rate>
+                            <Rate
+                                defaultValue={0}
+                                onChange={onChangeRate}
+                                value={rate}
+                            ></Rate>
+                            {rateError ? (
+                                <ErrorWrapper>
+                                    <ErrorContent>
+                                        평점을 입력해주세요!
+                                    </ErrorContent>
+                                </ErrorWrapper>
+                            ) : null}
                         </FormItem>
                         <FormItem label="내용" required>
                             <Input.TextArea
@@ -163,8 +240,20 @@ const PostForm = ({ reviewSetModal }) => {
                                 placeholder="내용을 입력해주세요"
                                 onChange={onChangeText}
                             ></Input.TextArea>
+                            {textError ? (
+                                <ErrorWrapper>
+                                    <ErrorContent>
+                                        내용을 입력해주세요!
+                                    </ErrorContent>
+                                </ErrorWrapper>
+                            ) : null}
                         </FormItem>
-                        <Button size="large" type="primary" htmlType="submit">
+                        <Button
+                            size="large"
+                            type="primary"
+                            htmlType="submit"
+                            loading={addPostLoading}
+                        >
                             등록하기
                         </Button>
                     </ContentWrapper>

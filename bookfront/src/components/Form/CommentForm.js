@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_COMMENT_REQUEST } from "../../reducer";
 import styled from "styled-components";
@@ -22,6 +22,17 @@ const CommentForm = ({ bookpostId }) => {
         [comment]
     );
 
+    const loginModal = () => {
+        Modal.info({
+            content: (
+                <div>
+                    <h3>로그인 해주세요!</h3>
+                </div>
+            ),
+            centered: true,
+            fontSize: 20,
+        });
+    };
     const onSubmit = () => {
         if (user) {
             dispatch({
@@ -33,7 +44,7 @@ const CommentForm = ({ bookpostId }) => {
                 },
             });
         } else {
-            alert("로그인을 해주세요!");
+            loginModal();
         }
     };
 

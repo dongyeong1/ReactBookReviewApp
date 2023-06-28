@@ -5,7 +5,7 @@ import styled from "styled-components";
 const Cards = styled(Card)`
     margin-top: 30px;
     width: 350px;
-    height: 510px;
+    height: 460px;
 
     .ant-card-meta-description {
         border-radius: 30px;
@@ -39,6 +39,7 @@ const BookImageSelect = ({ showModal, searchedBook }) => {
                         title={searchedBook.title}
                         description={
                             <Button
+                                style={{ borderRadius: 20, marginTop: 30 }}
                                 type="primary"
                                 size="large"
                                 onClick={showModal}

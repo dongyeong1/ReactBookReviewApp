@@ -14,12 +14,18 @@ import {
     NAVER_ACCESS_TOKEN,
 } from "../components/LoginToken";
 
+const ImageWrapper = styled.div`
+    margin-top: 90px;
+`;
+
 const SearchWrapper = styled(Input)`
-    margin: 40px auto;
+    // margin: 40px auto;
+    // border:solid 1px lightgray
     border-radius: 200px;
     height: 50px;
-    width: 500px;
+    width: 600px;
     font-size: 25px;
+    margin: 30px auto;
 `;
 const Home = () => {
     const dispatch = useDispatch();
@@ -61,20 +67,46 @@ const Home = () => {
     }, []);
 
     return (
-        <div>
-            <Space direction="vertical">
-                <div style={{ marginTop: 90 }}>
-                    <img src="img/logo.png" width="250"></img>
-                </div>
-
+        <div
+            style={{
+                position: "relative",
+                width: "100%",
+                height: 0,
+                paddingBottom: "51%",
+                overflow: "hidden",
+                textAlign: "center",
+            }}
+        >
+            {/* <main
+                style={{
+                    backgroundImage: `url("img/bookimage.png")`,
+                    height: 100,
+                }}
+            >
+                as
+            </main> */}
+            {/* <img
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                }}
+                src="img/bookimage.png"
+            ></img> */}
+            <div style={{ marginTop: 120 }}>
+                <img src="img/logo.png" width="500"></img>
+            </div>
+            <div>
                 <SearchWrapper
                     onChange={onChangeBook}
                     prefix={<SearchOutlined style={{ fontSize: 30 }} />}
-                    placeholder="책을 검색해보세요"
+                    placeholder="  책을 검색해보세요"
                     size="large"
                     onPressEnter={bookSearch}
                 />
-            </Space>
+            </div>
         </div>
     );
 };

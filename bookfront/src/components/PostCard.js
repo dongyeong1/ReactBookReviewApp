@@ -19,6 +19,7 @@ import FollowButton from "./FollowButton";
 import { KAKAO_ACCESS_TOKEN, NAVER_ACCESS_TOKEN } from "./LoginToken";
 
 const Cards = styled(Card)`
+    border: 1px solid lightgray;
     width: 500px;
     height: 160px;
     margin-bottom: 70px;
@@ -63,6 +64,18 @@ const PostCard = ({ bookpost }) => {
     const [like, setLike] = useState(false);
     const [showComment, setShowComment] = useState(false);
 
+    const loginModal = () => {
+        Modal.info({
+            content: (
+                <div>
+                    <h3>로그인 해주세요!</h3>
+                </div>
+            ),
+            centered: true,
+            fontSize: 20,
+        });
+    };
+
     useEffect(() => {
         if (sessionStorage.getItem(NAVER_ACCESS_TOKEN)) {
             dispatch({
@@ -88,7 +101,7 @@ const PostCard = ({ bookpost }) => {
                 });
                 setLike((prev) => !prev);
             } else {
-                alert("로그인을 해주세요!");
+                loginModal();
             }
         },
         [like, user]
@@ -102,7 +115,7 @@ const PostCard = ({ bookpost }) => {
             });
             setLike((prev) => !prev);
         } else {
-            alert("로그인을 해주세요!");
+            loginModal();
         }
     };
 

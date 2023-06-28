@@ -40,6 +40,7 @@ const RateWrapper = styled(Rate)`
 `;
 
 const Cards = styled(Card)`
+    border: 1px solid lightgray;
     width: 500px;
     height: 160px;
     border-radius: 20px;
@@ -67,8 +68,6 @@ const Pagination = styled.div`
     margin-bottom: 10px;
 
     .paginationBttns {
-        // margin:'auto';
-
         width: 500px;
         height: 30px;
         list-style: none;
@@ -80,22 +79,26 @@ const Pagination = styled.div`
         padding: 10px;
         margin: 8px;
         border-radius: 5px;
-        border: 1px solid #1890ff;
-        color: #1890ff;
+        border: 1px solid lightgray;
+        color: black;
         cursor: pointer;
     }
     .paginationBttns a:hover {
         color: white;
-        background-color: #1890ff;
+        background-color: lightgray;
     }
     .paginationActive a {
         color: white;
-        background-color: #1890ff;
+        background-color: lightgray;
     }
 `;
 const PaginationWrapper = styled.div`
     width: 500px;
     margin: 20px auto;
+`;
+
+const ContentWrapper = styled.div`
+    cursor: pointer;
 `;
 
 const MyPage = () => {
@@ -173,7 +176,9 @@ const MyPage = () => {
     const PerPage = 5;
     const pagesVisited = pageNumber * PerPage;
 
-    const pageCount = Math.ceil(user && user.Posts.length / PerPage);
+    const pageCount = Math.ceil(
+        user && user.Posts && user.Posts.length / PerPage
+    );
 
     const changePage = ({ selected }) => {
         setPageNumber(selected);
@@ -215,134 +220,146 @@ const MyPage = () => {
 
     return (
         <div>
-            <ProfileWrapper
-                actions={[
-                    <div key="twit">
-                        독후감갯수
-                        <br />
-                        {user && user.Posts.length}
-                    </div>,
-                    <div
-                        onClick={() => followModalHandle(user.Followings)}
-                        key="following"
-                    >
-                        팔로잉
-                        <br />
-                        {user && user.Followings.length}
-                    </div>,
-                    <div
-                        onClick={() => followerModalHandle(user.Followers)}
-                        key="follower"
-                    >
-                        팔로워
-                        <br />
-                        {user && user.Followers.length}
-                    </div>,
-                ]}
-            >
-                <Card.Meta
-                    style={{ height: 60, marginTop: 10 }}
-                    title={
-                        user && (
-                            <div style={{ fontSize: 22 }}>
-                                {user.nickname + "님 환영합니다!"}
-                            </div>
-                        )
-                    }
-                />
-            </ProfileWrapper>
-
-            {user &&
-                user.Posts.slice(pagesVisited, pagesVisited + PerPage).map(
-                    (post) => (
-                        <CardWrapper>
-                            <Cards
-                                actions={[
-                                    <div onClick={() => showEditModal(post.id)}>
-                                        {" "}
-                                        수정하기
-                                    </div>,
-                                    <div onClick={showConfirm(post.id)}>
-                                        {" "}
-                                        삭제하기
-                                    </div>,
-                                ]}
-                                key={post.bookname}
+            {user && user.Posts && (
+                <div>
+                    <ProfileWrapper
+                        actions={[
+                            <div key="twit">
+                                독후감갯수
+                                <br />
+                                {user && user.Posts ? user.Posts.length : 0}
+                            </div>,
+                            <div
+                                onClick={() =>
+                                    followModalHandle(user.Followings)
+                                }
+                                key="following"
                             >
-                                <Card.Meta
-                                    avatar={
-                                        <img
-                                            src={post.src}
-                                            style={{ width: 70 }}
-                                        ></img>
-                                    }
-                                    title={
-                                        <div>
-                                            <div style={{ fontSize: 16 }}>
-                                                {post.title}
-                                            </div>
-                                            <span style={{ fontSize: 11 }}>
-                                                {detailDate(
-                                                    new Date(post.createdAt)
-                                                )}
-                                            </span>
-                                        </div>
-                                    }
-                                    description={
-                                        <div
-                                            style={{ cursor: "pointer" }}
-                                            onClick={() => showModal(post)}
-                                        >
-                                            {textCut(
-                                                post.content,
-                                                15,
-                                                " ...상세보기"
-                                            )}
-                                        </div>
-                                    }
-                                />
-                                <RateWrapper
-                                    disabled
-                                    value={post.rate}
-                                ></RateWrapper>
-                            </Cards>
-                        </CardWrapper>
-                    )
-                )}
-            <PaginationWrapper>
-                <Pagination>
-                    {user && user.Posts && (
-                        <ReactPaginate
-                            previousLabel={<CaretLeftOutlined />}
-                            nextLabel={<CaretRightOutlined />}
-                            pageCount={pageCount}
-                            onPageChange={changePage}
-                            containerClassName={"paginationBttns"}
-                        ></ReactPaginate>
-                    )}
-                </Pagination>
-            </PaginationWrapper>
+                                팔로잉
+                                <br />
+                                {user && user.Followings.length}
+                            </div>,
+                            <div
+                                onClick={() =>
+                                    followerModalHandle(user.Followers)
+                                }
+                                key="follower"
+                            >
+                                팔로워
+                                <br />
+                                {user && user.Followers.length}
+                            </div>,
+                        ]}
+                    >
+                        <Card.Meta
+                            style={{ height: 60, marginTop: 10 }}
+                            title={
+                                user && (
+                                    <div style={{ fontSize: 22 }}>
+                                        {user.nickname + "님 환영합니다!"}
+                                    </div>
+                                )
+                            }
+                        />
+                    </ProfileWrapper>
 
-            <PostEditModal
-                post={modalPost}
-                editModal={editModal}
-                setEditModal={setEditModal}
-            ></PostEditModal>
-            <PostModal
-                modal={modal}
-                setModal={setModal}
-                modalcontent={modalcontent}
-            ></PostModal>
-            <FollowModal
-                followModal={followModal}
-                setFollowModal={setFollowModal}
-                followList={followList}
-            ></FollowModal>
-            <FollowerModal
-                follwerModal={follwerModal}
-                setFollowerModal={setFollowerModal}
-                followerList={followerList}
-            ></FollowerModal>
+                    {user.Posts &&
+                        user.Posts.slice(
+                            pagesVisited,
+                            pagesVisited + PerPage
+                        ).map((post) => (
+                            <CardWrapper>
+                                <Cards
+                                    actions={[
+                                        <div
+                                            onClick={() =>
+                                                showEditModal(post.id)
+                                            }
+                                        >
+                                            {" "}
+                                            수정하기
+                                        </div>,
+                                        <div onClick={showConfirm(post.id)}>
+                                            {" "}
+                                            삭제하기
+                                        </div>,
+                                    ]}
+                                    key={post.bookname}
+                                >
+                                    <Card.Meta
+                                        avatar={
+                                            <img
+                                                src={post.src}
+                                                width="70px"
+                                            ></img>
+                                        }
+                                        title={
+                                            <div>
+                                                <div style={{ fontSize: 16 }}>
+                                                    {post.title}
+                                                </div>
+                                                <span style={{ fontSize: 11 }}>
+                                                    {detailDate(
+                                                        new Date(post.createdAt)
+                                                    )}
+                                                </span>
+                                            </div>
+                                        }
+                                        description={
+                                            <ContentWrapper
+                                                onClick={() => showModal(post)}
+                                            >
+                                                {textCut(
+                                                    post.content,
+                                                    15,
+                                                    " ...상세보기"
+                                                )}
+                                            </ContentWrapper>
+                                        }
+                                    />
+                                    <RateWrapper
+                                        disabled
+                                        value={post.rate}
+                                    ></RateWrapper>
+                                </Cards>
+                            </CardWrapper>
+                        ))}
+                    <PaginationWrapper>
+                        <Pagination>
+                            {user && user.Posts && (
+                                <ReactPaginate
+                                    previousLabel={<CaretLeftOutlined />}
+                                    nextLabel={<CaretRightOutlined />}
+                                    pageCount={pageCount}
+                                    onPageChange={changePage}
+                                    containerClassName={"paginationBttns"}
+                                ></ReactPaginate>
+                            )}
+                        </Pagination>
+                    </PaginationWrapper>
+
+                    <PostEditModal
+                        post={modalPost}
+                        editModal={editModal}
+                        setEditModal={setEditModal}
+                    ></PostEditModal>
+                    <PostModal
+                        modal={modal}
+                        setModal={setModal}
+                        modalcontent={modalcontent}
+                    ></PostModal>
+                    <FollowModal
+                        followModal={followModal}
+                        setFollowModal={setFollowModal}
+                        followList={followList}
+                    ></FollowModal>
+                    <FollowerModal
+                        follwerModal={follwerModal}
+                        setFollowerModal={setFollowerModal}
+                        followerList={followerList}
+                    ></FollowerModal>
+                </div>
+            )}
         </div>
     );
 };

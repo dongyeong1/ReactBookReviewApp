@@ -2,7 +2,11 @@ import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 
 import { useDispatch, useSelector } from "react-redux";
-import { LOG_OUT_SUCCESS, SEARCH_BOOK_REMOVE } from "../reducer";
+import {
+    LOG_OUT_REQUEST,
+    LOG_OUT_SUCCESS,
+    SEARCH_BOOK_REMOVE,
+} from "../reducer";
 import { MenuOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import ReviewModal from "./Modal/ReivewModal";
@@ -16,23 +20,30 @@ import {
 } from "./LoginToken";
 
 const NavWrapper = styled.div`
-    position: relative;
+    // position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: lightgray;
+
+    border: 20 //
+        .cuaAeS {
+        height: 300px;
+    }
+    border-bottom: 1px solid black;
+    padding: 20px 20px;
 
     span {
-        color: white;
+        font-family: Belanosima, sans-serif;
+
+        color: #457abf;
         text-decoration: none;
     }
-    padding: 8px 12px;
-
     .nav_logo {
-        font-size: 24px;
+        font-size: 20px;
     }
 
     .nav_menu {
+        margin-right: 100px;
         display: flex;
         list-style: none;
         padding-left: 0;
@@ -45,7 +56,7 @@ const NavWrapper = styled.div`
     }
 
     .nav_menu > li {
-        padding: 8px 12px;
+        padding: 8px 36px;
         margin: 0 20px 0 20px;
     }
 
@@ -63,12 +74,23 @@ const NavWrapper = styled.div`
     }
 
     .nav_menu > li:hover {
-        background-color: red;
+        background-color: #457abf;
         border-radius: 10px;
     }
 
+    .sc:hover {
+        color: white;
+    }
+    .rv:hover {
+        color: white;
+    }
+    .mp:hover {
+        color: white;
+    }
+
     .menuactive > li:hover {
-        background-color: red;
+        background-color: #457abf;
+
         border-radius: 10px;
     }
 
@@ -135,6 +157,18 @@ const TopLayout = ({ children }) => {
         });
     };
 
+    const loginModal = () => {
+        Modal.info({
+            content: (
+                <div>
+                    <h3>로그인 해주세요!</h3>
+                </div>
+            ),
+            centered: true,
+            fontSize: 20,
+        });
+    };
+
     const logOut = useCallback(() => {
         if (sessionStorage.getItem(NAVER_ACCESS_TOKEN)) {
             sessionStorage.removeItem(NAVER_ACCESS_TOKEN);
@@ -150,17 +184,26 @@ const TopLayout = ({ children }) => {
                 type: LOG_OUT_SUCCESS,
             });
             success();
+        } else {
+            dispatch({
+                type: LOG_OUT_REQUEST,
+            });
         }
 
-        navigate("/home");
+        navigate("/");
     }, []);
 
     const modalHandle = useCallback(() => {
-        dispatch({
-            type: SEARCH_BOOK_REMOVE,
-        });
-        setShowModal(true);
-    }, []);
+        if (!user) {
+            console.log("asdasd");
+            loginModal();
+        } else {
+            dispatch({
+                type: SEARCH_BOOK_REMOVE,
+            });
+            setShowModal(true);
+        }
+    }, [user]);
 
     const bookRemove = useCallback(() => {
         dispatch({
@@ -186,8 +229,8 @@ const TopLayout = ({ children }) => {
 
             <NavWrapper className="navbar">
                 <div className="nav_logo">
-                    <Link to="/home">
-                        <span>Home</span>
+                    <Link to="/">
+                        <img src="img/logo.png" width="200"></img>
                     </Link>
                 </div>
                 <ul className={menuActive ? "menuactive" : "nav_menu"}>
@@ -195,8 +238,8 @@ const TopLayout = ({ children }) => {
                         <Link to="/booksearch">
                             <span
                                 onClick={bookRemove}
-                                style={{ fontSize: 18 }}
-                                className="ser"
+                                style={{ fontSize: 22, fontWeight: 600 }}
+                                className="sc"
                             >
                                 책검색
                             </span>
@@ -207,7 +250,8 @@ const TopLayout = ({ children }) => {
                             <Link>
                                 {" "}
                                 <span
-                                    style={{ fontSize: 18 }}
+                                    className="rv"
+                                    style={{ fontSize: 22, fontWeight: 600 }}
                                     onClick={modalHandle}
                                 >
                                     리뷰쓰기
@@ -219,7 +263,12 @@ const TopLayout = ({ children }) => {
                         {" "}
                         {user && (
                             <Link to="/mypage">
-                                <span style={{ fontSize: 18 }}>마이페이지</span>
+                                <span
+                                    className="mp"
+                                    style={{ fontSize: 22, fontWeight: 600 }}
+                                >
+                                    마이페이지
+                                </span>
                             </Link>
                         )}
                     </li>
@@ -227,15 +276,24 @@ const TopLayout = ({ children }) => {
 
                 <div className={linkActive ? "linkactive" : "nav_link"}>
                     {sessionStorage.getItem(NAVER_ACCESS_TOKEN) ||
-                    sessionStorage.getItem(KAKAO_ACCESS_TOKEN) ? (
-                        <Link to="/home">
-                            <span onClick={logOut} style={{ fontSize: 18 }}>
+                    sessionStorage.getItem(KAKAO_ACCESS_TOKEN) ||
+                    user ? (
+                        <Link to="/">
+                            <span
+                                onClick={logOut}
+                                style={{ fontSize: 22, fontWeight: 600 }}
+                            >
+                                <span style={{ fontSize: 15, marginRight: 20 }}>
+                                    {user && user.nickname}님 환영합니다!{" "}
+                                </span>
                                 로그아웃
                             </span>
                         </Link>
                     ) : (
                         <Link to="/login">
-                            <span style={{ fontSize: 18 }}>로그인</span>
+                            <span style={{ fontSize: 22, fontWeight: 600 }}>
+                                로그인
+                            </span>
                         </Link>
                     )}
                 </div>

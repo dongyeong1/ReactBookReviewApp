@@ -3,7 +3,7 @@ import { Button, Empty, Modal } from "antd";
 import { Card } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import PostCard from "../components/PostCard";
 import {
     BOOK_LOAD_REQUEST,
@@ -13,12 +13,7 @@ import {
     RATE_BOOK_POSTS_REQUEST,
 } from "../reducer";
 import ReactPaginate from "react-paginate";
-import {
-    UserOutlined,
-    SearchOutlined,
-    CaretRightOutlined,
-    CaretLeftOutlined,
-} from "@ant-design/icons";
+import { CaretRightOutlined, CaretLeftOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import {
     KAKAO_ACCESS_TOKEN,
@@ -59,22 +54,24 @@ const Pagination = styled.div`
         padding: 10px;
         margin: 8px;
         border-radius: 5px;
-        border: 1px solid #1890ff;
-        color: #1890ff;
+        border: 1px solid lightgray;
+        color: black;
         cursor: pointer;
     }
     .paginationBttns a:hover {
         color: white;
-        background-color: #1890ff;
+        background-color: lightgray;
     }
     .paginationActive a {
         color: white;
-        background-color: #1890ff;
+        background-color: lightgray;
     }
 `;
 const Book = () => {
     const { id } = useParams();
-    const { posts, book } = useSelector((state) => state);
+    const { posts, book, ratePostLoading, bookPostsLoading } = useSelector(
+        (state) => state
+    );
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -134,20 +131,23 @@ const Book = () => {
         <div>
             <CardWrapper>
                 <Card.Meta
-                    avatar={
-                        <img
-                            src={book && book.image}
-                            style={{ width: 50 }}
-                        ></img>
-                    }
+                    avatar={<img src={book && book.image} width="50px"></img>}
                     description={book && book.title}
                 />
             </CardWrapper>
             <ButtonWrapper>
-                <Button size="large" onClick={dateSort}>
+                <Button
+                    size="large"
+                    onClick={dateSort}
+                    loading={bookPostsLoading}
+                >
                     최신순
                 </Button>
-                <Button size="large" onClick={rateSort}>
+                <Button
+                    size="large"
+                    onClick={rateSort}
+                    loading={ratePostLoading}
+                >
                     평점순
                 </Button>
             </ButtonWrapper>
@@ -179,6 +179,3 @@ const Book = () => {
 };
 
 export default Book;
-
-// XML
-// https://openapi.naver.com/v1/search/book.json

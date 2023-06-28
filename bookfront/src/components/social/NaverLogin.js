@@ -1,7 +1,4 @@
-import axios from "axios";
-import React, { useCallback, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { NAVER_LOGIN_REQUEST } from "../../reducer";
+import React from "react";
 
 const NaverLogin = () => {
     let client_id = process.env.REACT_APP_NAVER_LOGIN_CLIENT_ID;
@@ -16,11 +13,7 @@ const NaverLogin = () => {
 
     return (
         <a href={naver_api_url}>
-            <img
-                height="50"
-                width="250"
-                src="http://static.nid.naver.com/oauth/small_g_in.PNG"
-            />
+            <img height="60" width="250" src="img/naverLogin.png" />
         </a>
     );
 };

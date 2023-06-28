@@ -12,10 +12,7 @@ const KakaoLogin = () => {
 
     return (
         <a href={kakao_api_url}>
-            <img
-                width="250"
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRq5y4gLsduJ9rithyOIRC_I25A92MyB-bFXg&usqp=CAU"
-            ></img>
+            <img height="60" width="250" src="img/kakaoLogin.png"></img>
         </a>
     );
 };

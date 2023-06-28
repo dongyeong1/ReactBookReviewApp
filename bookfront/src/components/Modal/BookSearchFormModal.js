@@ -29,18 +29,18 @@ const Pagination = styled.div`
         padding: 7px;
         margin: 10px;
         border-radius: 5px;
-        border: 1px solid #1890ff;
-        color: #1890ff;
+        border: 1px solid lightgray;
+        color: black;
         cursor: pointer;
     }
 
     .paginationBttns a:hover {
         color: white;
-        background-color: #1890ff;
+        background-color: lightgray;
     }
     .paginationActive a {
         color: white;
-        background-color: #1890ff;
+        background-color: lightgray;
     }
 `;
 

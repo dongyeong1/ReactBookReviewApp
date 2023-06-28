@@ -21,6 +21,18 @@ const KakaoOauth = () => {
         });
     };
 
+    const Loginsuccess = () => {
+        Modal.success({
+            content: (
+                <div>
+                    <h3>로그인 성공</h3>
+                </div>
+            ),
+            centered: true,
+            fontSize: 20,
+        });
+    };
+
     useEffect(() => {
         success();
 
@@ -60,7 +72,8 @@ const KakaoOauth = () => {
                             res.data.token_type
                         );
                         Modal.destroyAll();
-                        navigate("/home");
+                        navigate("/");
+                        Loginsuccess();
                     });
             })
             .catch((err) => {

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useCallback, useState } from "react";
 import { Input, Button, Rate, Modal, Form, Card } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { POST_EDIT_REQUEST } from "../../reducer";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import Modals from "react-modal";
@@ -48,6 +48,7 @@ const ContentWrapper = styled.div`
     }
 `;
 const PostEditModal = ({ editModal, setEditModal, post }) => {
+    const { postEditLoading } = useSelector((state) => state);
     const customStyles = {
         content: {
             width: 900,
@@ -193,7 +194,11 @@ const PostEditModal = ({ editModal, setEditModal, post }) => {
                                         onChange={onChangeContent}
                                     ></Input.TextArea>
                                 </FormItem>
-                                <Button type="primary" htmlType="submit">
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    loading={postEditLoading}
+                                >
                                     수정하기
                                 </Button>
                             </ContentWrapper>
